@@ -1,0 +1,12 @@
+version: '3.3'
+services:     #a list of all the images/containers to create
+  mongo:      #mongo is the service to be included
+    image: mongo:4.2.5
+    ports:
+      - "27017:27017"
+  app:
+    build: .
+    environment:
+      WAIT_HOSTS: mongo:27017
+    ports:
+      - '8080:8080'
