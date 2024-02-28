@@ -1,0 +1,16 @@
+<!--This is the skeleton that every html file will use, kind of like the base that you can modify-->
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv=""X-UA-Compatible" content="ie=edge">
+        <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}"> <!--This links the css to the html-->
+        <link rel="stylesheet" href="{{url_for('static', filename='js/main.js')}}"> <!--This links the js to the html-->
+        {% block head %}{% endblock %} <!--This is like a placeholder, where when you make different versions of this base, you can insert here to make changes to thhe header, which is a container for metadata-->
+    </head>
+    <body>
+        {% block body %}{% endblock %} <!--This is like a placeholder, where when you make different versions of this base, you can insert here to make changes to the body-->
+    </body>
+</html>
