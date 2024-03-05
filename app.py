@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, request
 # from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -14,10 +14,27 @@ app = Flask(__name__)
 #     def __repr__(self): #returns a string of the task and id whenever a new element is created
 #         return '<Task %r>' % self.id
 
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    if request.method == 'GET':
+        return render_template('login.html')
 
-@app.route('/') #This is the path that is being traveled
+@app.route('/', methods=['POST', 'GET']) #This is the path that is being traveled, can take 2 routes that it can take
 def index():    #This is what runs when you go to this path 
-    return render_template('index.html') #it returns the rendering of the html file
+    if request.method == 'POST':
+        pass
+    elif request.method == 'GET':
+        return render_template('main.html') #it returns the rendering of the html file
+
+@app.route('/static/css/main.css', methods=['GET'])
+def css():
+    return render_template('main.css')
+
+@app.route('/register', methods=['POST'])
+def register():
+    render_template('login.html')
+
+
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=8080)
