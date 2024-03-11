@@ -1,6 +1,13 @@
 from flask import Flask, render_template, url_for, request
+from pymongo import MongoClient
 # from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+
+mongo_client = MongoClient("mongo")
+db = mongo_client["cse312Project"]
+user_collection = db["users"] # username, password, auth, xsrf
+post_collection = db["posts"] # ID, subject, body
+comments_collection = db["comments"] # POSTID, body
 
 app = Flask(__name__)
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db' #/// is a relative path, //// is an absolute path
