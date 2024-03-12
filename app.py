@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request
+from flask import Flask, render_template, url_for, request, redirect
 from pymongo import MongoClient
 # from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
@@ -26,12 +26,24 @@ def login():
     if request.method == 'GET':
         return render_template('login.html')
     elif request.method == 'POST':
+        user_username = request.form['login-username']
+        user_password = request.form['login-password']
         # check if they exist in database
+        users = user_collection.find({"username": user_username}, {"_id":0})
+        if users[0]['password'] == user_password:
+            redirect("/")
         pass
 
 @app.route('/sigup', methods=['POST'])
 def signup():
     # register the user
+    user_username = request.form['login-username']
+    user_password = request.form['login-password']
+    user_repassword = request.form['login-password2']
+    if user_password == user_repassword:
+        # TODO: hash password before storing it
+        user_collection.insert_one({"username":user_username, "password": user_password, "auth" : 0, "xsrf": 0})
+        return redirect("/login")
     pass
 
 @app.route('/', methods=['POST', 'GET']) #This is the path that is being traveled, can take 2 routes that it can take
