@@ -8,5 +8,14 @@
 
 // moved login and register into static because they couldn't be found in templates with current setup
 
+function Login() { send_request("POST", "/login", {}); }
+
 function Logout() { window.location = "/static/login.html"; }
-function register_page() { window.location = "/static/register.html"; }
+
+function Register() { send_request("POST", "/register", {}); }
+
+function send_request(method, path, cookies) {
+    const request = new XMLHttpRequest();
+    request.open(method, path);
+    request.send(JSON.stringify(cookies));
+ }
