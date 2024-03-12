@@ -26,8 +26,8 @@ def login():
     if request.method == 'GET':
         return render_template('login.html')
     elif request.method == 'POST':
-        user_username = request.form['login-username']
-        user_password = request.form['login-password']
+        user_username = request.form['login_username']
+        user_password = request.form['login_password']
         # check if they exist in database
         users = user_collection.find({"username": user_username}, {"_id":0})
         if users[0]['password'] == user_password:
@@ -59,9 +59,12 @@ def css():
 
 @app.route('/register', methods=['POST'])
 def register():
-    render_template('login.html')
+    return render_template('login.html')
 
-
+@app.route('/logout', methods=['GET'])
+def logout():
+    if (request.method == 'GET'):
+        return render_template('login.html')
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=8080)
