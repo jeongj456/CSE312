@@ -25,6 +25,14 @@ app = Flask(__name__)
 def login():
     if request.method == 'GET':
         return render_template('login.html')
+    elif request.method == 'POST':
+        # check if they exist in database
+        pass
+
+@app.route('/sigup', methods=['POST'])
+def signup():
+    # register the user
+    pass
 
 @app.route('/', methods=['POST', 'GET']) #This is the path that is being traveled, can take 2 routes that it can take
 def index():    #This is what runs when you go to this path 

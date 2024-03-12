@@ -21,13 +21,17 @@
         </style>
 
         <h1>Create an account</h1>
-            <form action="/login" method="post">
+            <form action="/signup" method="post">
                 <label>Username 
                     <input id="login-form-username" type="text" name="login-username"/>
                 </label>
                 <br/>
                 <label>Password
                     <input id="login-form-password" type="text" name="login-password"/>
+                </label>
+                <br/>
+                <label>Re-enter Password
+                    <input id="login-form-password2" type = 'text' name = 'login-password2'/>
                 </label>
                 <br/>
                 <input type="submit" value="Create"
