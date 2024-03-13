@@ -31,9 +31,16 @@ def login():
 
         # check if they exist in database
         user = user_collection.find_one({"username": user_username}, {"_id":0})
+        # Mike: To whoever put the statement below here... Why?
         print(user)
-        if bcrypt.checkpw(user_password.encode(), user["password"]): return redirect("/")
-        else: return render_template('login.html')
+        if not user == None:
+            if bcrypt.checkpw(user_password.encode(), user["password"]): 
+                # TODO: Make authtoken, store authtoken
+                return redirect("/")
+            else:
+                return render_template('login.html')
+        else: 
+            return render_template('login.html')
 
 @app.route('/signup', methods=['POST'])
 def signup():
@@ -41,12 +48,18 @@ def signup():
     user_username = request.form['login-username']
     user_password = request.form['login-password']
     user_repassword = request.form['login-password2']
+    if user_username == "" or user_password == "":
+        return render_template('register.html')
     
     if user_password == user_repassword:
-        # TODO: hash password before storing it
         hashed_pass = bcrypt.hashpw(user_password.encode(), bcrypt.gensalt())
-        user_collection.insert_one({"username":user_username, "password": hashed_pass, "auth" : 0, "xsrf": 0})
-        return redirect("/login")
+        # Check if the username exists in the DB already, if it does ignore.
+        user = user_collection.find_one({"username": user_username}, {"_id":0})
+        if user == None:
+            user_collection.insert_one({"username":user_username, "password": hashed_pass, "auth" : 0, "xsrf": 0})
+            return redirect("/login")
+        else: 
+            return render_template('register.html') 
     else: return render_template('register.html') 
 
 # This is the path that is being traveled, can take 2 routes that it can take
