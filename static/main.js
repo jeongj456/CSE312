@@ -10,7 +10,7 @@
 
 function Startup() { document.getElementById("comments").innerHTML = "Add a Comment" }
 
-/* function Login() { send_request("POST", "/login"); }
+function Login() { send_request("POST", "/login"); }
 
 function Logout() { send_request("GET", "/logout"); }
 
@@ -21,4 +21,3 @@ function send_request(method, path) {
     request.open(method, path);
     request.send(JSON.stringify());
  } 
-*/
