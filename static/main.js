@@ -8,6 +8,8 @@
 
 // moved login and register into static because they couldn't be found in templates with current setup
 
+function Startup() { document.getElementById("comments").innerHTML = "Add a Comment" }
+
 function Login() { send_request("POST", "/login"); }
 
 function Logout() { send_request("GET", "/logout"); }
