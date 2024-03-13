@@ -12,21 +12,15 @@
     </head>
 
     <body>
-        <script src="/static/main.js"></script>
         <h1>Please enter your username and password</h1>
             <form action="/login" method="post">
-                <label>Username
-                    <input id="login-form-username" type="text" name="login_username"/>
-                </label>
-                <label>Password
-                    <input id="login-form-password" type="text" name="login_password"/>
-                </label>
-                <button id="login-button" onclick="Login()">Login</button>
-                <!--<input type="submit" value="Log in" <!--Creates a button that submits the data-->
+                <label>Username<input id="login-form-username" type="text" name="login_username"/></label>
+                <label>Password<input id="login-form-password" type="text" name="login_password"/></label>
+                <a href='/login'><button>login</button></a>
             </form>
 
             <p>Don't have an account?</p>
-            <button id="Register-page" onclick="Register()">Register</button>
+            <a href='/register'><button>register</button></a>
 
     </body>
 
