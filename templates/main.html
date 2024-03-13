@@ -1,3 +1,90 @@
+{% extends 'base.html' %}
+
+
+{% block head %}
+
+{% endblock %}
+
+
+{% block body %}
+<body onload="Startup()">
+<body background="/public/tech.jpg">
+    <div class="contents">
+
+        <div id="logreg">
+
+            <h1>Please enter your username and password</h1>
+            <form action="/login" method="post">
+                <label>Username
+                    <input id="login-form-username" type="text" name="login_username"/>
+                </label>
+                <label>Password
+                    <input id="login-form-password" type="text" name="login_password"/>
+                </label>
+                <input type="submit" value="Log in" <!--Creates a button that submits the data-->
+            </form>
+
+            <h1>Don't have an account?</h1>
+            <form action="/signup" method="post">
+                <h1>Login</h1>
+                <label>Username<input id="login-form-username" type="text" name="login-username"/></label>
+                <br/>
+                <label>Password<input id="login-form-password" type="text" name="login-password"/></label>
+                <br/>
+                <label>Re-enter Password<input id="login-form-password2" type = 'text' name = 'login-password2'/></label>
+                <br/>
+                <a href='/signup'><button>Create</button></a>
+            </form>
+
+        </div>
+
+        <div class="explore-page">
+            <div class="logout">Login
+                <button id="comment-button" onclick="Login()">Login</button>
+            </div>
+
+            <h1>Explore</h1>
+
+        </div>
+
+        <div class="images" hidden>
+            
+            <div class="logout" hidden>End Session
+                <button id="comment-button" onclick="Logout()">Logout</button>
+            </div>
+
+            <h1>Images</h1>
+                <div id="images">
+                    <img src="/public/homepage.jpg" alt="Homepage wallpaper" width="50%" height="350"/> <!--prints whatever value is in alt if img is not uploaded correctly-->
+                </div>
+        </div>
+
+
+        <hr>      
+
+
+        <div class="peoples-comments" hidden>
+
+            <h2>Comments</h2>
+            <div id="comments"></div>
+
+            <div class="add-comment">
+                <hr>
+                Add Comment
+                <form action="/add_comment" method="POST">
+                    <input type="text" name="new_comment" id="comment">
+                    <input type="submit" value="Post"
+                </form>
+            </div>
+
+        </div>
+
+    </div>   
+    
+</body>
+</body>
+{% endblock %}
+<!--
 <!DOCTYPE html>
 <html lang="en">
 
@@ -51,3 +138,4 @@
     </body>
 
 </html>
+-->

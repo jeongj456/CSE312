@@ -1,27 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-    <head>
-        <title>Login</title>
-        <meta charset="UTF-8">
-        <meta name="authors" content="Jon, Jeehum, Mike, Kameron"
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv=""X-UA-Compatible" content="ie=edge">
-        <link rel="icon" type="image/x-icon" href="/public/eagle.ico">
-        <link rel="stylesheet" href="/static/login.css">
-    </head>
 
-    <body>
-        <h1>Please enter your username and password</h1>
-            <form action="/login" method="post">
-                <label>Username<input id="login-form-username" type="text" name="login_username"/></label>
-                <label>Password<input id="login-form-password" type="text" name="login_password"/></label>
-                <a href='/login'><button>login</button></a>
-            </form>
+{% block head %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/login.css')}}">
+{% endblock %}
 
-            <p>Don't have an account?</p>
-            <a href='/register'><button>register</button></a>
 
-    </body>
+{% block body %}
+<body>
+   <h1>Please enter your username and password</h1>
+    <form action="/login" method="post">
+        <label>Username
+            <input id="login-form-username" type="text" name="login_username"/>
+        </label>
+        <label>Password
+            <input id="login-form-password" type="text" name="login_password"/>
+        </label>
+        <input type="submit" value="Log in" <!--Creates a button that submits the data-->
+    </form>
 
-</html>
+    <p>Don't have an account?
+        <button id="Register-page" onclick="register_page()">Register</button> 
+    </p>
+    
+</body>
+{% endblock %}

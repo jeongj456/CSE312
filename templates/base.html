@@ -2,15 +2,19 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
     <head>
+        <title>JJKM</title>
         <meta charset="UTF-8">
+        <meta name="authors" content="Jon, Jake, Mike, Kameron"
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv=""X-UA-Compatible" content="ie=edge">
-        <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}"> <!--This links the css to the html-->
-        <link rel="stylesheet" href="{{url_for('static', filename='js/main.js')}}"> <!--This links the js to the html-->
+        <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
+        <link rel="icon" href="{{url_for('public', filename='ico/eagle.ico')}}">
         {% block head %}{% endblock %} <!--This is like a placeholder, where when you make different versions of this base, you can insert here to make changes to thhe header, which is a container for metadata-->
     </head>
-    <body>
-        {% block body %}{% endblock %} <!--This is like a placeholder, where when you make different versions of this base, you can insert here to make changes to the body-->
-    </body>
+
+    {% block body %}{% endblock %} <!--This is like a placeholder, where when you make different versions of this base, you can insert here to make changes to the body-->
+
+    
 </html>
