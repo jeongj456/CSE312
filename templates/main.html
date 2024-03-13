@@ -1,3 +1,62 @@
+{% extends 'base.html' %}
+
+
+{% block head %}
+<link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
+{% endblock %}
+
+
+{% block body %}
+<body background="/public/tech.jpg">
+
+    <div class="contents">
+
+        <div class="explore-page">
+            <div class="logout">Login
+                <button id="comment-button" onclick="Login()">Login</button>
+            </div>
+
+            <h1>Explore</h1>
+
+        </div>
+
+        <div class="images" hidden>
+            
+            <div class="logout" hidden>End Session
+                <button id="comment-button" onclick="Logout()">Logout</button>
+            </div>
+
+            <h1>Images</h1>
+                <div id="images"</div>
+                <img src="/public/homepage.jpg" alt="Homepage wallpaper" width="50%" height="350"/> <!--prints whatever value is in alt if img is not uploaded correctly-->
+            
+        </div>
+
+
+        <hr>      
+
+
+        <div class="peoples-comments" hidden>
+
+            <h2>Comments</h2>
+            <div id="comments"></div>
+
+            <div class="add-comment">
+                <hr>
+                Add Comment
+                <form action="/add_comment" method="POST">
+                    <input type="text" name="new_comment" id="comment">
+                    <input type="submit" value="Post"
+                </form>
+            </div>
+
+        </div>
+
+    </div>   
+    
+</body>
+{% endblock %}
+<!--
 <!DOCTYPE html>
 <html lang="en">
 
@@ -51,3 +110,4 @@
     </body>
 
 </html>
+-->
