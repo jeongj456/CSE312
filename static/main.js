@@ -8,7 +8,7 @@
 
 // moved login and register into static because they couldn't be found in templates with current setup
 
-/*
+
 function Startup() { document.getElementById("comments").innerHTML = "Add a Comment" }
 
 function Login() { send_request("POST", "/login"); }
@@ -21,4 +21,4 @@ function send_request(method, path) {
     const request = new XMLHttpRequest();
     request.open(method, path);
     request.send(JSON.stringify());
- } */
+ } 
