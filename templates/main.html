@@ -2,7 +2,7 @@
 
 
 {% block head %}
-<link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
+
 {% endblock %}
 
 
@@ -10,6 +10,18 @@
 <body background="/public/tech.jpg">
 
     <div class="contents">
+
+        <div>
+            <form action="/signup" method="post">
+                <label>Username<input id="login-form-username" type="text" name="login-username"/></label>
+                <br/>
+                <label>Password<input id="login-form-password" type="text" name="login-password"/></label>
+                <br/>
+                <label>Re-enter Password<input id="login-form-password2" type = 'text' name = 'login-password2'/></label>
+                <br/>
+                <a href='/signup'><button>Create</button></a>
+            </form>
+        </div>
 
         <div class="explore-page">
             <div class="logout">Login
