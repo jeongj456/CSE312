@@ -8,25 +8,21 @@
 
 {% block body %}
 <body onload="Startup()">
-<body background="/public/tech.jpg">
     <div class="contents">
-        <img src="/public/homepage.jpg" alt="Homepage background" class="my_image"/>
-        <div id="logreg">
-
-            <h1>Please enter your username and password</h1>
+        <!--<img src="/public/homepage.jpg" alt="Homepage background" class="my_image"/> -->
+        <div class="login">
+            <h3>Login</h3>
             <form action="/login" method="post">
-                <label>Username
-                    <input id="login-form-username" type="text" name="login_username"/>
-                </label>
-                <label>Password
-                    <input id="login-form-password" type="text" name="login_password"/>
-                </label>
+                <label>Username<input id="login-form-username" type="text" name="login_username"/></label>
+                <br/>
+                <label>Password<input id="login-form-password" type="text" name="login_password"/></label>
                 <input type="submit" value="Log in" <!--Creates a button that submits the data-->
             </form>
+        </div>
 
-            <h1>Don't have an account?</h1>
+        <div class="register">
+            <h3>Don't have an account?</h3>
             <form action="/signup" method="post">
-                <h1>Login</h1>
                 <label>Username<input id="login-form-username" type="text" name="login-username"/></label>
                 <br/>
                 <label>Password<input id="login-form-password" type="text" name="login-password"/></label>
@@ -35,16 +31,14 @@
                 <br/>
                 <a href='/signup'><button>Create</button></a>
             </form>
-
         </div>
+            
+        
 
         <div class="explore-page">
-            <div class="logout">Login
-                <button id="comment-button" onclick="Login()">Login</button>
-            </div>
-
             <h1>Explore</h1>
-
+            <hr>
+            <img src="/public/homepage.jpg" alt="Homepage image" width="50%" height="350"/>
         </div>
 
         <div class="images" hidden>
@@ -55,12 +49,10 @@
 
             <h1>Images</h1>
                 <div id="images">
-                    <img src="/public/homepage.jpg" alt="Homepage wallpaper" width="50%" height="350"/> <!--prints whatever value is in alt if img is not uploaded correctly-->
+                    <img src="/public/homepage.jpg" alt="Homepage image" width="50%" height="350"/> <!--prints whatever value is in alt if img is not uploaded correctly-->
                 </div>
         </div>
-
-
-        <hr>      
+    
 
 
         <div class="peoples-comments" hidden>
@@ -80,8 +72,6 @@
         </div>
 
     </div>   
-    
-</body>
 </body>
 {% endblock %}
 <!--

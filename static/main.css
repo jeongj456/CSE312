@@ -1,7 +1,30 @@
+/*If you want to change a specific element with a specific id, put # before the name of the id*/
+/*If you want to change a specific class, put . before the class name. If you want to change only that element with that class, put the name of the element.class*/
 body {
     margin: 0;
     padding: 0;
     font-family: cursive
+}
+
+div.login{
+    font-size: small;
+    position: absolute;
+    left: 0;
+    top: 1%;
+    left: 1%;
+}
+
+.expore-page{
+    text-align: center;
+    top: 45%
+}
+
+div.register{
+    font-size: small;
+    position: absolute;
+    right: 0;
+    top: 1%;
+    right: 1%;
 }
 
 .contents {
