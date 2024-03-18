@@ -14,17 +14,64 @@ div.login{
     left: 1%;
 }
 
-.expore-page{
-    text-align: center;
-    top: 45%
-}
-
 div.register{
     font-size: small;
     position: absolute;
     right: 0;
     top: 1%;
     right: 1%;
+}
+
+.expore-page{
+    text-align: center;
+    top: 45%
+}
+
+.container{
+    top: 33%;
+    margin: 10%;
+}
+
+.box1{
+    position: absolute;
+    text-align: center;
+    left: 6%;
+    width: 25%;
+    height: 50%;
+    background: blue;
+    float: left;
+    margin: 15px;
+    box-sizing: border-box;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.box2{
+    position: absolute;
+    text-align: center;
+    left: 36.75%;
+    width: 25%;
+    height: 50%;
+    background: blue;
+    float: left;
+    margin: 15px;
+    box-sizing: border-box;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.box3{
+    position: absolute;
+    text-align: center;
+    right: 6%;
+    width: 25%;
+    height: 50%;
+    background: blue;
+    float: left;
+    margin: 15px;
+    box-sizing: border-box;
+    overflow: hidden;
+    border-radius: 10px;
 }
 
 .contents {
