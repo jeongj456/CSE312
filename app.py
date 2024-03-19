@@ -79,7 +79,7 @@ def index():
     if request.method == 'POST':
         pass
     elif request.method == 'GET':
-        file = os.path.join(homepageimg, 'eagle.jpg')
+        file = os.path.join(homepageimg, 'eagle.jpg') #line 20 and the following lines allow you to upload an image
         form = UploadFileForm()
         if form.validate_on_submit():
             file = form.file.data # First grab the file

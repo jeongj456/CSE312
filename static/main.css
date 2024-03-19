@@ -4,6 +4,8 @@ body {
     margin: 0;
     padding: 0;
     font-family: cursive;
+    color: bisque;
+    background-image: url(/static/public/eagle.jpg);
 }
 
 div.login{
@@ -25,7 +27,6 @@ div.register{
 .expore-page{
     text-align: center;
     top: 45%;
-    background-image: url(/static/public/eagle.jpg);
 }
 
 .container{
