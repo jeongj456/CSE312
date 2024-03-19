@@ -2,7 +2,11 @@ import bcrypt
 from datetime import datetime
 from pymongo import MongoClient
 from flask import Flask, render_template, url_for, request, redirect
-# from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import FlaskForm
+from wtforms import FileField, SubmitField
+from werkzeug.utils import secure_filename
+import os
+from wtforms.validators import InputRequired
 
 mongo_client = MongoClient("mongo")
 db = mongo_client["cse312Project"]
@@ -11,6 +15,9 @@ post_collection = db["posts"] # ID, subject, body
 comments_collection = db["comments"] # POSTID, body
 
 app = Flask(__name__)
+app.config["SECRET_KEY"] = 'supersecretkey'
+app.config['UPLOAD_FOLDER'] = 'static/files'
+homepageimg = os.path.join('static', 'public')
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db' #/// is a relative path, //// is an absolute path
 #db = SQLAlchemy(app) #initializes the database for the app
 
@@ -62,12 +69,23 @@ def signup():
             return render_template('register.html') 
     else: return render_template('register.html') 
 
+class UploadFileForm(FlaskForm):
+    file = FileField("File", validators=[InputRequired()])
+    submit = SubmitField("Upload File")
+
 # This is the path that is being traveled, can take 2 routes that it can take
 @app.route('/', methods=['POST', 'GET'])
 def index():
-    if request.method == 'POST': pass
+    if request.method == 'POST':
+        pass
     elif request.method == 'GET':
-        return render_template('main.html')
+        file = os.path.join(homepageimg, 'eagle.jpg')
+        form = UploadFileForm()
+        if form.validate_on_submit():
+            file = form.file.data # First grab the file
+            file.save(os.path.join(os.path.abspath(os.path.dirname(__file__)),app.config['UPLOAD_FOLDER'],secure_filename(file.filename))) # Then save the file
+            return "File has been uploaded."
+        return render_template('main.html', form=form, image=file)
 
 @app.route('/static/css/main.css', methods=['GET'])
 def css():
@@ -80,6 +98,7 @@ def register():
 @app.route('/logout', methods=['GET'])
 def logout():
     return render_template('login.html')
+
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=8080)

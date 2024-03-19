@@ -38,20 +38,34 @@
         <div class="explore-page">
             <h1>Explore</h1>
             <hr>
-            <img src="/public/homepage.jpg" alt="Homepage image" width="50%" height="350"/>
+            <img src = "{{image}}">
+            <!--<img src= "{{url_for('static', filename='/public/homepage.jpg')}}" > -->
         </div>
 
 
         <div class="container">
-            <div class="box1">
-                <h3>Image1</h3>
+            <body>
+                <div class="box1">
+                    <h3>Image1</h3>
+                </div>
+
+                <div class="box2">
+                    <h3>Image2</h3>
+                </div>
+
+                <div class="box3">
+                    <h3>Image3</h3>
+                </div>
+            </body>
+            
+            <div class="image-upload">Upload an Image
+               <form method="POST" enctype="multipart/form-data">
+                    {{form.hidden_tag()}}
+                    {{form.file()}}
+                    {{form.submit()}}
+                </form> 
             </div>
-            <div class="box2">
-                <h3>Image2</h3>
-            </div>
-            <div class="box3">
-                <h3>Image3</h3>
-            </div>
+            
         </div>
         
 
@@ -88,58 +102,3 @@
     </div>   
 </body>
 {% endblock %}
-<!--
-<!DOCTYPE html>
-<html lang="en">
-
-    <head>
-        <title>Homepage</title>
-        <meta charset="UTF-8">
-        <meta name="authors" content="Jon, Jeehum, Mike, Kameron"
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv=""X-UA-Compatible" content="ie=edge">
-        <link rel="stylesheet" href="/static/main.css" type="text/css">
-        <link rel="icon" type="image/x-icon" href="/public/eagle.ico">
-    </head>
-
-    <body onload="Startup()">
-    <body background="/public/tech.jpg">
-        <script type="text/javascript" src="{{url_for('static', filename='main.js')}}"></script>
-        <div class="contents">
-
-            <div class="images">
-                
-                <div class="logout">End Session<a href='/logout'><button>logout</button></a></div>
-
-                <h1>Images</h1>
-                    <div id="images"</div>
-                    <img src="/public/homepage.jpg" alt="Homepage wallpaper" width="50%" height="350"/>
-                
-            </div>
-
-
-            <hr>      
-
-
-            <div class="peoples-comments">
-
-                <h2>Comments</h2>
-                <div id="comments"></div>
-
-                <div class="add-comment">
-                    <hr>
-                    Add Comment
-                    <form action="/add_comment" method="POST">
-                        <input type="text" name="new_comment" id="comment">
-                        <input type="submit" value="Post"
-                    </form>
-                </div>
-
-            </div>
-
-        </div>   
-        
-    </body>
-
-</html>
--->
