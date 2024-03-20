@@ -46,19 +46,58 @@
         <div class="container">
             <body>
                 <div class="box1">
-                    <h3>Image1</h3>
+                    <h3>Category1</h3>
+                    <img src = "{{image1}}">
+
+                    <hr>
+                    
+                    <div class="peoples-comments">
+                        <h2>Comments</h2>
+                        <div id="comments"></div>
+            
+                        <div class="add-comment">
+                            <form action="/add_comment" method="POST">Comment
+                                <input type="text" name="new_comment" id="comment">
+                                <input type="submit" value="Post"
+                            </form>
+                        </div>
+                    </div>
+
                 </div>
+                
+
+                <div class="arrows1">
+                    <div class="arr up"><div></div></div>
+                    <div class="arr down"><div></div></div>
+                </div>
+                <div class="arrows2">
+                    <div class="arr up"><div></div></div>
+                    <div class="arr down"><div></div></div>  
+                </div>
+                
 
                 <div class="box2">
-                    <h3>Image2</h3>
-                </div>
+                    <h3>Category2</h3>
+                    <img src = "{{image2}}">
 
-                <div class="box3">
-                    <h3>Image3</h3>
+                    <hr>
+
+                    <div class="peoples-comments">
+                        <h2>Comments</h2>
+                        <div id="comments"></div>
+            
+                        <div class="add-comment">
+                            <form action="/add_comment" method="POST">Comment
+                                <input type="text" name="new_comment" id="comment">
+                                <input type="submit" value="Post"
+                            </form>
+                        </div>
+                    </div>
+
                 </div>
             </body>
             
-            <div class="image-upload">Upload an Image
+            <div class="image-upload" hidden>Upload an Image
                <form method="POST" enctype="multipart/form-data">
                     {{form.hidden_tag()}}
                     {{form.file()}}
