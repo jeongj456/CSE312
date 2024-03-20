@@ -86,7 +86,7 @@ def index():
             file = form.file.data # First grab the file
             file.save(os.path.join(os.path.abspath(os.path.dirname(__file__)),app.config['UPLOAD_FOLDER'],secure_filename(file.filename))) # Then save the file
             return "File has been uploaded."
-        return render_template('main.html', form=form, image1=file1, image2=file2)
+        return render_template('main.html', form=form, image1=file1, image2=file2) #image1 and image2 are the files/images that are given into the html as an image in the html tag <img src = "{{image1}}">
 
 @app.route('/static/css/main.css', methods=['GET'])
 def css():
