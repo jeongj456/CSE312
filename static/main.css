@@ -45,6 +45,10 @@ input[type="submit"]:hover{
     background-color: #0056b3;
 }
 
+#login-form-password, #login-form-password2{
+    color: white;
+}
+
 /*If you want to change a div inside a div, need to list all the parent divs before that one*/
 
 
