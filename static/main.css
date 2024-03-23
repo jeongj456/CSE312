@@ -31,7 +31,7 @@ div.register {
 input[type="submit"]{
     width: auto;
     padding: 6px 12px;
-    margin-top: 0px; /* Adjust as necessary to manage space */
+    margin-top: 0px; /* Adjust as necessary to manage space*/
     font-size: 10px;
     border: none;
     border-radius: 2px;
@@ -47,15 +47,16 @@ input[type="submit"]:hover{
 
 /*If you want to change a div inside a div, need to list all the parent divs before that one*/
 
-.explore-page {
-    text-align: center;
-    position: relative;
-    margin-top: 2px;
-}
 
 .container {
     padding: 20px;
     text-align: center;
+    margin-top: 100px;
+}
+
+.explore-page {
+    text-align: center;
+    position: relative;
 }
 
 /* Box Styles */
