@@ -13,9 +13,9 @@
         <div class="login">
             <h3>Login</h3>
             <form action="/login" method="post">
-                <label>Username<input id="login-form-username" type="text" name="login_username"/></label>
+                <label>Username: <input id="login-form-username" type="text" name="login_username"/></label>
                 <br/>
-                <label>Password<input id="login-form-password" type="text" name="login_password"/></label>
+                <label>Password: <input id="login-form-password" type="text" name="login_password"/></label>
                 <input type="submit" value="Log in" <!--Creates a button that submits the data-->
             </form>
         </div>
@@ -23,13 +23,14 @@
         <div class="register">
             <h3>Don't have an account?</h3>
             <form action="/signup" method="post">
-                <label>Username<input id="login-form-username" type="text" name="login-username"/></label>
+                <label>Username: <input id="login-form-username" type="text" name="login-username"/></label>
                 <br/>
-                <label>Password<input id="login-form-password" type="text" name="login-password"/></label>
+                <label>Password: <input id="login-form-password" type="text" name="login-password"/></label>
                 <br/>
-                <label>Re-enter Password<input id="login-form-password2" type = 'text' name = 'login-password2'/></label>
+                <label>Re-enter Password: <input id="login-form-password2" type = 'text' name = 'login-password2'/></label>
                 <br/>
-                <a href='/signup'><button>Create</button></a>
+                <input type="submit" href='/signup' value="Create"></a>
+                <!--<a href='/signup'><button>Create</button></a>-->
             </form>
         </div>
             
@@ -37,7 +38,6 @@
 
         <div class="explore-page">
             <h1>Explore</h1>
-            <hr>
             <!--<img src = "{{image}}">-->
             <!--<img src= "{{url_for('static', filename='/public/homepage.jpg')}}" > -->
         </div>
@@ -46,7 +46,7 @@
         <div class="container">
             <body>
                 <div class="box1">
-                    <h3>Category1</h3>
+                    <h3>Category 1</h3>
                     <img src = "{{image1}}">
 
                     <hr>
@@ -77,7 +77,7 @@
                 
 
                 <div class="box2">
-                    <h3>Category2</h3>
+                    <h3>Category 2</h3>
                     <img src = "{{image2}}">
 
                     <hr>
