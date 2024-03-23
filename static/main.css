@@ -7,6 +7,10 @@ body {
     /*background-image: url(/static/public/website.jpg); */
 }
 
+.current-status{
+    color: red;
+}
+
 div.login, div.register {
     font-size: 12px;
     position: fixed;
