@@ -8,7 +8,7 @@ body {
 }
 
 .current-status{
-    color: red;
+    color: rgb(206, 81, 81);
 }
 
 div.login, div.register {
