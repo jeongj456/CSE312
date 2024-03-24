@@ -16,7 +16,7 @@ mongo_client = MongoClient("mongo")
 db = mongo_client["cse312Project"]
 ID_collection = db["id"] # id
 user_collection = db["users"] # username, password, auth, xsrf
-post_collection = db["posts"] # ID, subject, body
+post_collection = db["posts"] # ID, subject, body, creator
 comments_collection = db["comments"] # POSTID, body
 
 app = Flask(__name__)
@@ -135,6 +135,7 @@ def tabicon():
 @app.route('/makepost', methods = ["POST"])
 def storepost():
     ID = 0
+    username="Guest"
     increment = ID_collection.find_one({"id":ID}, {"_id":0})
     if increment != None:
         ID = increment["id"]
@@ -143,10 +144,18 @@ def storepost():
     body = request.form['messagebody']
     if subject == "" or body == "":
         return redirect('/renderpostcreation')
-    post_collection.insert_one({"ID": ID,"subject": subject,"body":body})
+    auth_cookie = hashlib.sha256(request.cookies.get("auth"))
+    PotentialCreator = user_collection.find_one({"auth":auth_cookie}, {"_id":0})
+    if not PotentialCreator == None:
+        username = PotentialCreator["username"]
+    post_collection.insert_one({"ID": ID,"subject": subject,"body":body,"creator":username})
     #update the ID_collection count
     ID_collection.update_one({"id":ID}, {"$set": {"id":ID+1}})
     return redirect('/')
+
+@app.route("/main.js",methods=["GET"])
+def sendmainJS():
+    return send_file("static/main.js",mimetype="text/javascript")
 
 @app.route("/startup", methods=["GET"])
 def sendpostdata():
