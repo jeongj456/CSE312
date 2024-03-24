@@ -1,4 +1,5 @@
 import bcrypt
+import json
 import re
 import secrets
 import hashlib
@@ -146,6 +147,12 @@ def storepost():
     #update the ID_collection count
     ID_collection.update_one({"id":ID}, {"$set": {"id":ID+1}})
     return redirect('/')
+
+@app.route("/startup", methods=["GET"])
+def sendpostdata():
+    posts = post_collection.find({},{"_id":0})
+    data = json.dumps(list(posts))
+    return data
 
 @app.after_request
 def nosniff(response):
