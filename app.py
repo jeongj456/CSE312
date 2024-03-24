@@ -137,7 +137,7 @@ def storepost():
     ID = 0
     username="Guest"
     increment = ID_collection.find_one({}, {"_id":0})
-    if not len(increment) == 0:
+    if not increment == None:
         ID = increment["id"]
     else:
         ID_collection.insert_one({"id":0})
