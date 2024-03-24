@@ -167,7 +167,7 @@ def sendpostdata():
 
 @app.route("/add_comment",methods=["POST"])
 def add_comment():
-    comment = request.form["comment"]
+    comment = request.form["new_comment"]
     post = request.form["postidhidden"]
     username= "Guest"
     auth_cookie = hashlib.sha256(request.cookies.get("auth","").encode()).hexdigest()
@@ -176,6 +176,7 @@ def add_comment():
         username = PotentialCreator["username"]
     # POSTID, body, postowner
     comments_collection.insert_one({"POSTID":post,"body":comment,"postowner":username})
+    return ("", 204)
 
 @app.route("/getcomments/<int:postid>",methods=["GET"])
 def getcomments(postid):

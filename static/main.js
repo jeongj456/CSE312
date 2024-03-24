@@ -43,6 +43,8 @@ function arrow_up() {
     
     request.open("GET", "/startup");
     request.send();
+
+    getcomments()
 }
 
 
@@ -63,10 +65,26 @@ function arrow_down() {
     
     request.open("GET", "/startup");
     request.send();
+
+    getcomments()
 }
 
 function getcomments(){
-    const route = "/getcomments/"
+    let route = "/getcomments/"
+    const post_id = document.getElementById("post_id").innerHTML;
+    route += post_id;
+
+    const request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState === 4 && this.status === 200) {
+            const message = JSON.parse(this.response);
+            console.log(this.response);
+        }
+    }
+
+    request.open("GET", route);
+    request.send();
+
     // Get the post id and concatenate it to the end of route
     // make a call to the server at the route now stored in that variable
     // this (should) return to you a list of all comments for that post
