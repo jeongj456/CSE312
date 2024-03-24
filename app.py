@@ -144,7 +144,7 @@ def storepost():
     body = request.form['messagebody']
     if subject == "" or body == "":
         return redirect('/renderpostcreation')
-    auth_cookie = hashlib.sha256(request.cookies.get("auth"))
+    auth_cookie = hashlib.sha256(request.cookies.get("auth").encode())
     PotentialCreator = user_collection.find_one({"auth":auth_cookie}, {"_id":0})
     if not PotentialCreator == None:
         username = PotentialCreator["username"]
