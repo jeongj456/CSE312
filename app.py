@@ -122,4 +122,13 @@ def replace_html_element(filename, search_text, replace_text):
 def homeimage():
     return send_file('static/public/homepage.jpg', mimetype = 'image/jpeg')
 
+@app.route('/favicon.ico', methods=['GET'])
+def tabicon():
+    return send_file('static/public/eagle.ico', mimetype = 'image/x-icon')
+
+@app.after_request
+def nosniff(response):
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    return response
+
 if __name__ == "__main__": app.run(debug=True, host="0.0.0.0", port=8080)
