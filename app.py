@@ -131,7 +131,7 @@ def setuppost():
 def tabicon():
     return send_file('static/public/eagle.ico', mimetype = 'image/x-icon')
 
-@app.route('/makepost')
+@app.route('/makepost', methods = ["POST"])
 def storepost():
     ID = 0
     increment = ID_collection.find_one({"id":ID}, {"_id":0})
