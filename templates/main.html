@@ -51,8 +51,8 @@
                 <div class="box1">
                     <h3 id="subject1">Category 1</h3>
                     <br><br/>
-                    <div id="test_cat"></div> 
-                    <img src = "{{image1}}">
+                    <div id="body_placeholder"></div> 
+                    <!-- <img src = "{{image1}}"> -->
 
                     <hr>
                     
@@ -72,8 +72,8 @@
                 
 
                 <div class="arrows1">
-                    <div class="arr up"><div></div></div>
-                    <div class="arr down"><div></div></div>
+                    <div class="arr up" type="button" onclick="arrow_up()"><div></div></div>
+                    <div class="arr down" type="button" onclick="arrow_down()"><div></div></div>
                 </div>
                 <div class="arrows2">
                     <div class="arr up"><div></div></div>
@@ -124,7 +124,7 @@
                 </div>
         </div>
     
-
+        <div id="post_id" hidden>-1</div>
 
         <div class="peoples-comments" hidden>
 
