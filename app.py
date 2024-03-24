@@ -136,20 +136,20 @@ def tabicon():
 def storepost():
     ID = 0
     username="Guest"
-    increment = ID_collection.find_one({"id":ID}, {"_id":0})
-    if increment != None:
+    increment = ID_collection.find_one({}, {"_id":0})
+    if not len(increment) == 0:
         ID = increment["id"]
+    else:
+        ID_collection.insert_one({"id":0})
     #Store subject and body
     subject = request.form['subjectbox']
     body = request.form['messagebody']
     if subject == "" or body == "":
         return redirect('/renderpostcreation')
-    cookie = request.cookies.get("auth")
-    if not cookie == None:
-        auth_cookie = hashlib.sha256(cookie.encode())
-        PotentialCreator = user_collection.find_one({"auth":auth_cookie}, {"_id":0})
-        if not PotentialCreator == None:
-            username = PotentialCreator["username"]
+    auth_cookie = hashlib.sha256(request.cookies.get("auth","").encode()).hexdigest()
+    PotentialCreator = user_collection.find_one({"auth":auth_cookie}, {"_id":0})
+    if not PotentialCreator == None:
+        username = PotentialCreator["username"]
     post_collection.insert_one({"ID": ID,"subject": subject,"body":body,"creator":username})
     #update the ID_collection count
     ID_collection.update_one({"id":ID}, {"$set": {"id":ID+1}})
