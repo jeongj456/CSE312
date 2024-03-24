@@ -13,6 +13,7 @@ from wtforms.validators import InputRequired
 
 mongo_client = MongoClient("mongo")
 db = mongo_client["cse312Project"]
+ID_collection = db["id"] # id
 user_collection = db["users"] # username, password, auth, xsrf
 post_collection = db["posts"] # ID, subject, body
 comments_collection = db["comments"] # POSTID, body
@@ -129,6 +130,22 @@ def setuppost():
 @app.route('/favicon.ico', methods=['GET'])
 def tabicon():
     return send_file('static/public/eagle.ico', mimetype = 'image/x-icon')
+
+@app.route('/makepost')
+def storepost():
+    ID = 0
+    increment = ID_collection.find_one({"id":ID}, {"_id":0})
+    if increment != None:
+        ID = increment["id"]
+    #Store subject and body
+    subject = request.form['subjectbox']
+    body = request.form['messagebody']
+    if subject == "" or body == "":
+        return redirect('/renderpostcreation')
+    post_collection.insert_one({"ID": ID,"subject": subject,"body":body})
+    #update the ID_collection count
+    ID_collection.update_one({"id":ID}, {"$set": {"id":ID+1}})
+    return redirect('/')
 
 @app.after_request
 def nosniff(response):
