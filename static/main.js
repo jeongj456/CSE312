@@ -9,16 +9,13 @@
 // moved login and register into static because they couldn't be found in templates with current setup
 
 
-function Startup() { document.getElementById("comments").innerHTML = "Add a Comment" }
-
-function Login() { send_request("POST", "/login"); }
-
-function Logout() { send_request("GET", "/logout"); }
-
-function Register() { send_request("POST", "/register"); }
-
-function send_request(method, path) {
+function startup() { 
     const request = new XMLHttpRequest();
-    request.open(method, path);
-    request.send(JSON.stringify());
- } 
+    request.onreadystatechange = function () {
+        if (this.readyState === 4 && this.status === 200) {
+            console.log(this.response);
+        }
+    }
+    request.open("GET", "/startup")
+}
+

@@ -1,7 +1,11 @@
 import bcrypt
+import re
+import random
+import string
+import hashlib
 from datetime import datetime
 from pymongo import MongoClient
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask, render_template, url_for, request, redirect, make_response
 from flask_wtf import FlaskForm
 from wtforms import FileField, SubmitField
 from werkzeug.utils import secure_filename
@@ -18,8 +22,9 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = 'supersecretkey'
 app.config['UPLOAD_FOLDER'] = 'static/files'
 homepageimg = os.path.join('static', 'public')
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db' #/// is a relative path, //// is an absolute path
-#db = SQLAlchemy(app) #initializes the database for the app
+
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db' #/// is a relative path, //// is an absolute path
+# db = SQLAlchemy(app) #initializes the database for the app
 
 # class Todo(db.Model):
 #     id = db.Column(db.Integer, primary_key=True)    #creates a column in the database that holds an id of integer value
@@ -31,23 +36,30 @@ homepageimg = os.path.join('static', 'public')
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
-    if request.method == 'GET': return render_template('login.html')
+    if request.method == 'GET': return redirect("/")
     elif request.method == 'POST':
         user_username = request.form['login_username']
         user_password = request.form['login_password']
 
         # check if they exist in database
-        user = user_collection.find_one({"username": user_username}, {"_id":0})
-        # Mike: To whoever put the statement below here... Why?
-        print(user)
-        if not user == None:
+        user = user_collection.find_one({"username":user_username}, {"_id":0})
+        if user != None:
+
+            # check if password matches db password, if it doesn't then deny login.
             if bcrypt.checkpw(user_password.encode(), user["password"]): 
                 # TODO: Make authtoken, store authtoken
-                return redirect("/")
-            else:
-                return render_template('login.html')
-        else: 
-            return render_template('login.html')
+
+                # creating auth token and updating db
+                auth_token = "".join(random.choices(string.ascii_letters, k=50))
+                hashed_auth = hashlib.sha256(auth_token.encode()).hexdigest()
+                user_collection.update_one({"username":user_username}, {"$set": {"auth": hashed_auth}})
+
+                resp = make_response(redirect('/'))
+                resp.set_cookie(key="auth", value=auth_token, max_age=10000, httponly=True)
+                return resp
+            
+            else: return redirect('/')
+        else: return redirect('/')
 
 @app.route('/signup', methods=['POST'])
 def signup():
@@ -55,19 +67,18 @@ def signup():
     user_username = request.form['login-username']
     user_password = request.form['login-password']
     user_repassword = request.form['login-password2']
-    if user_username == "" or user_password == "":
-        return render_template('register.html')
     
-    if user_password == user_repassword:
+    if user_username == "" or user_password == "" or user_repassword == "": 
+        return redirect("/")
+    
+    elif user_password == user_repassword:
         hashed_pass = bcrypt.hashpw(user_password.encode(), bcrypt.gensalt())
+        
         # Check if the username exists in the DB already, if it does ignore.
-        user = user_collection.find_one({"username": user_username}, {"_id":0})
-        if user == None:
-            user_collection.insert_one({"username":user_username, "password": hashed_pass, "auth" : 0, "xsrf": 0})
-            return redirect("/login")
-        else: 
-            return render_template('register.html') 
-    else: return render_template('register.html') 
+        user = user_collection.find_one({"username":user_username}, {"_id":0})
+        if user == None: user_collection.insert_one({"username":user_username, "password":hashed_pass, "auth":0, "xsrf":0})
+
+    return redirect("/") 
 
 class UploadFileForm(FlaskForm):
     file = FileField("File", validators=[InputRequired()])
@@ -76,6 +87,19 @@ class UploadFileForm(FlaskForm):
 # This is the path that is being traveled, can take 2 routes that it can take
 @app.route('/', methods=['POST', 'GET'])
 def index():
+    if request.cookies.get('auth') == None:
+        replace_html_element("templates/main.html", 'class="logout"', 'class="logout" hidden')
+        replace_html_element("templates/main.html", "Current status:.*", "Current status: Guest")
+    else:
+        hashed_auth = hashlib.sha256(request.cookies.get('auth').encode()).hexdigest()
+        if user_collection.find_one({"auth":hashed_auth}, {"_id":0}) == None:
+            replace_html_element("templates/main.html", 'class="logout"', 'class="logout" hidden')
+            replace_html_element("templates/main.html", "Current status:.*", "Current status: Guest")
+        else:
+            replace_html_element("templates/main.html", 'class="logout" hidden.*', 'class="logout">')
+            replace_html_element("templates/main.html", "Current status:.*", "Current status: " + user_collection.find_one({"auth":hashed_auth}, {"_id":0})["username"])
+
+
     if request.method == 'POST':
         pass
     elif request.method == 'GET':
@@ -89,17 +113,25 @@ def index():
         return render_template('main.html', form=form, image1=file1, image2=file2) #image1 and image2 are the files/images that are given into the html as an image in the html tag <img src = "{{image1}}">
 
 @app.route('/static/css/main.css', methods=['GET'])
-def css():
-    return render_template('main.css')
+def css(): return render_template('main.css')
 
-@app.route('/register', methods=['GET'])
-def register():
-    return render_template('register.html')
+@app.route('/logout', methods=['GET', 'POST'])
+def logout():         
+    user_collection.update_one({"auth":request.cookies.get('auth')}, {"$set": {"auth":0}})
 
-@app.route('/logout', methods=['GET'])
-def logout():
-    return render_template('login.html')
+    replace_html_element("templates/main.html", 'class="logout"', 'class="logout" hidden')
+    replace_html_element("templates/main.html", "Current status:.*", "Current status: Guest")
 
+    resp = make_response(redirect('/'))
+    resp.set_cookie(key="auth", value=request.cookies.get('auth'), max_age=-1, httponly=True)
+    return resp
 
-if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=8080)
+def replace_html_element(filename, search_text, replace_text):
+    with open(filename, 'r+') as f:
+        file = f.read()
+        file = re.sub(search_text, replace_text, file)
+        f.seek(0)
+        f.write(file)
+        f.truncate()
+
+if __name__ == "__main__": app.run(debug=True, host="0.0.0.0", port=8080)
