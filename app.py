@@ -4,7 +4,7 @@ import secrets
 import hashlib
 from datetime import datetime
 from pymongo import MongoClient
-from flask import Flask, render_template, url_for, request, redirect, make_response
+from flask import Flask, render_template, url_for, request, redirect, make_response, send_file
 from flask_wtf import FlaskForm
 from wtforms import FileField, SubmitField
 from werkzeug.utils import secure_filename
@@ -117,5 +117,9 @@ def replace_html_element(filename, search_text, replace_text):
         f.seek(0)
         f.write(file)
         f.truncate()
+
+@app.route('/public/homepage.jpg', methods=['GET'])
+def homeimage():
+    return send_file('static/public/homepage.jpg', mimetype = 'image/jpeg')
 
 if __name__ == "__main__": app.run(debug=True, host="0.0.0.0", port=8080)
