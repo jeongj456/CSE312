@@ -144,10 +144,12 @@ def storepost():
     body = request.form['messagebody']
     if subject == "" or body == "":
         return redirect('/renderpostcreation')
-    auth_cookie = hashlib.sha256(request.cookies.get("auth", "1").encode())
-    PotentialCreator = user_collection.find_one({"auth":auth_cookie}, {"_id":0})
-    if not PotentialCreator == None:
-        username = PotentialCreator["username"]
+    cookie = request.cookies.get("auth")
+    if not cookie == None:
+        auth_cookie = hashlib.sha256(cookie.encode())
+        PotentialCreator = user_collection.find_one({"auth":auth_cookie}, {"_id":0})
+        if not PotentialCreator == None:
+            username = PotentialCreator["username"]
     post_collection.insert_one({"ID": ID,"subject": subject,"body":body,"creator":username})
     #update the ID_collection count
     ID_collection.update_one({"id":ID}, {"$set": {"id":ID+1}})
