@@ -44,7 +44,7 @@ function arrow_up() {
     request.open("GET", "/startup");
     request.send();
 
-    getcomments()
+    getcomments();
 }
 
 
@@ -66,7 +66,7 @@ function arrow_down() {
     request.open("GET", "/startup");
     request.send();
 
-    getcomments()
+    getcomments();
 }
 
 function getcomments(){

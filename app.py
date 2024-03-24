@@ -178,7 +178,7 @@ def add_comment():
     comments_collection.insert_one({"POSTID":post,"body":comment,"postowner":username})
     return ("", 204)
 
-@app.route("/getcomments/<int:postid>",methods=["GET"])
+@app.route("/getcomments/<postid>",methods=["GET"])
 def getcomments(postid):
     comments = comments_collection.find({"POSTID":postid},{"_id":0})
     data = json.dumps(list(comments))
