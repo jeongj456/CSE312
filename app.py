@@ -122,6 +122,10 @@ def replace_html_element(filename, search_text, replace_text):
 def homeimage():
     return send_file('static/public/homepage.jpg', mimetype = 'image/jpeg')
 
+@app.route('/renderpostcreation',methods=["GET"])
+def setuppost():
+    return send_file("templates/tempposts.html", mimetype="text/html")
+
 @app.route('/favicon.ico', methods=['GET'])
 def tabicon():
     return send_file('static/public/eagle.ico', mimetype = 'image/x-icon')
