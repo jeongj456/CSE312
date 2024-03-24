@@ -54,6 +54,14 @@ input[type="submit"]:hover{
     margin-top: 100px;
 }
 
+.register {
+    z-index: 20;
+}
+
+.login {
+    z-index:20;
+}
+
 .explore-page {
     text-align: center;
     position: relative;
