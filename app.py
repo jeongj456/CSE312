@@ -1,7 +1,6 @@
 import bcrypt
 import re
-import random
-import string
+import secrets
 import hashlib
 from datetime import datetime
 from pymongo import MongoClient
@@ -23,17 +22,6 @@ app.config["SECRET_KEY"] = 'supersecretkey'
 app.config['UPLOAD_FOLDER'] = 'static/files'
 homepageimg = os.path.join('static', 'public')
 
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db' #/// is a relative path, //// is an absolute path
-# db = SQLAlchemy(app) #initializes the database for the app
-
-# class Todo(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)    #creates a column in the database that holds an id of integer value
-#     content = db.Column(db.String(500), nullable=False) #creates a column that holds each task/content that is a string with a maximum length of 500
-#     date_created = db.Column(db.DateTime, default=datetime.utcnow) #creates a column that holds when each entry is created, this is set automatically
-
-#     def __repr__(self): #returns a string of the task and id whenever a new element is created
-#         return '<Task %r>' % self.id
-
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'GET': return redirect("/")
@@ -44,13 +32,11 @@ def login():
         # check if they exist in database
         user = user_collection.find_one({"username":user_username}, {"_id":0})
         if user != None:
-
             # check if password matches db password, if it doesn't then deny login.
             if bcrypt.checkpw(user_password.encode(), user["password"]): 
-                # TODO: Make authtoken, store authtoken
-
                 # creating auth token and updating db
-                auth_token = "".join(random.choices(string.ascii_letters, k=50))
+                auth_token = secrets.token_urlsafe(70)
+                # auth_token = "".join(random.choices(string.ascii_letters, k=50))
                 hashed_auth = hashlib.sha256(auth_token.encode()).hexdigest()
                 user_collection.update_one({"username":user_username}, {"$set": {"auth": hashed_auth}})
 
@@ -70,14 +56,12 @@ def signup():
     
     if user_username == "" or user_password == "" or user_repassword == "": 
         return redirect("/")
-    
     elif user_password == user_repassword:
         hashed_pass = bcrypt.hashpw(user_password.encode(), bcrypt.gensalt())
-        
         # Check if the username exists in the DB already, if it does ignore.
         user = user_collection.find_one({"username":user_username}, {"_id":0})
-        if user == None: user_collection.insert_one({"username":user_username, "password":hashed_pass, "auth":0, "xsrf":0})
-
+        if user == None: 
+            user_collection.insert_one({"username":user_username, "password":hashed_pass, "auth":0, "xsrf":0})
     return redirect("/") 
 
 class UploadFileForm(FlaskForm):
@@ -116,9 +100,9 @@ def index():
 def css(): return render_template('main.css')
 
 @app.route('/logout', methods=['GET', 'POST'])
-def logout():         
-    user_collection.update_one({"auth":request.cookies.get('auth')}, {"$set": {"auth":0}})
-
+def logout():
+    token = hashlib.sha256(request.cookies.get('auth').encode()).hexdigest()
+    user_collection.update_one({"auth":token}, {"$set": {"auth":""}})
     replace_html_element("templates/main.html", 'class="logout"', 'class="logout" hidden')
     replace_html_element("templates/main.html", "Current status:.*", "Current status: Guest")
 
