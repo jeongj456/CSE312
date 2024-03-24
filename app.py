@@ -17,7 +17,7 @@ db = mongo_client["cse312Project"]
 ID_collection = db["id"] # id
 user_collection = db["users"] # username, password, auth, xsrf
 post_collection = db["posts"] # ID, subject, body, creator
-comments_collection = db["comments"] # POSTID, body
+comments_collection = db["comments"] # POSTID, body, postowner
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = 'supersecretkey'
@@ -163,6 +163,24 @@ def sendmainJS():
 def sendpostdata():
     posts = post_collection.find({},{"_id":0})
     data = json.dumps(list(posts))
+    return data
+
+@app.route("/add_comment",methods=["POST"])
+def add_comment():
+    comment = request.form["comment"]
+    post = request.form["postidhidden"]
+    username= "Guest"
+    auth_cookie = hashlib.sha256(request.cookies.get("auth","").encode()).hexdigest()
+    PotentialCreator = user_collection.find_one({"auth":auth_cookie}, {"_id":0})
+    if not PotentialCreator == None:
+        username = PotentialCreator["username"]
+    # POSTID, body, postowner
+    comments_collection.insert_one({"POSTID":post,"body":comment,"postowner":username})
+
+@app.route("/getcomments/<int:postid>",methods=["GET"])
+def getcomments(postid):
+    comments = comments_collection.find({"POSTID":postid},{"_id":0})
+    data = json.dumps(list(comments))
     return data
 
 @app.after_request

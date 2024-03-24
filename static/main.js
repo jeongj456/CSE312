@@ -34,7 +34,9 @@ function arrow_up() {
             const message = JSON.parse(this.response);
             if (message.length != 0) { 
                 post_id = Number(document.getElementById("post_id").innerHTML);
-                if (post_id != -1 && post_id < message.length - 1) { update_posts(Array(message[post_id + 1])); }
+                const postID = document.getElementById("postidhidden");
+                postID.setAttribute("value", post_id);
+                if (post_id != -1 && post_id < message.length - 1) { update_posts(Array(message[post_id + 1])); postID.setAttribute("value", post_id+1); }
              }
         }
     }
@@ -52,11 +54,23 @@ function arrow_down() {
             const message = JSON.parse(this.response);
             if (message.length != 0) {
                 post_id = Number(document.getElementById("post_id").innerHTML);
-                if (post_id != -1 && post_id > 0) { update_posts(Array(message[post_id - 1])); }
+                const postID = document.getElementById("postidhidden");
+                postID.setAttribute("value", post_id);
+                if (post_id != -1 && post_id > 0) { update_posts(Array(message[post_id - 1])); postID.setAttribute("value", post_id-1); }
              }
         }
     }
     
     request.open("GET", "/startup");
     request.send();
+}
+
+function getcomments(){
+    const route = "/getcomments/"
+    // Get the post id and concatenate it to the end of route
+    // make a call to the server at the route now stored in that variable
+    // this (should) return to you a list of all comments for that post
+    // return that list for usage.
+    //My idea behind this is that whenever the post is changed, you can call this function
+    // to get the comments for a post and then from that you can populate the comments section as a list.
 }
