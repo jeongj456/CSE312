@@ -1,4 +1,5 @@
 import bcrypt
+import html
 import json
 import re
 import secrets
@@ -30,6 +31,8 @@ def login():
     elif request.method == 'POST':
         user_username = request.form['login_username']
         user_password = request.form['login_password']
+        user_username = html.escape(user_username)
+        user_password = html.escape(user_password)
 
         # check if they exist in database
         user = user_collection.find_one({"username":user_username}, {"_id":0})
@@ -38,7 +41,6 @@ def login():
             if bcrypt.checkpw(user_password.encode(), user["password"]): 
                 # creating auth token and updating db
                 auth_token = secrets.token_urlsafe(70)
-                # auth_token = "".join(random.choices(string.ascii_letters, k=50))
                 hashed_auth = hashlib.sha256(auth_token.encode()).hexdigest()
                 user_collection.update_one({"username":user_username}, {"$set": {"auth": hashed_auth}})
 
@@ -55,6 +57,9 @@ def signup():
     user_username = request.form['login-username']
     user_password = request.form['login-password']
     user_repassword = request.form['login-password2']
+    user_username = html.escape(user_username)
+    user_password = html.escape(user_password)
+    user_repassword = html.escape(user_repassword)
     
     if user_username == "" or user_password == "" or user_repassword == "": 
         return redirect("/")
@@ -143,7 +148,9 @@ def storepost():
         ID_collection.insert_one({"id":0})
     #Store subject and body
     subject = request.form['subjectbox']
+    subject = html.escape(subject)
     body = request.form['messagebody']
+    body=html.escape(body)
     if subject == "" or body == "":
         return redirect('/renderpostcreation')
     auth_cookie = hashlib.sha256(request.cookies.get("auth","").encode()).hexdigest()
@@ -168,7 +175,9 @@ def sendpostdata():
 @app.route("/add_comment",methods=["POST"])
 def add_comment():
     comment = request.form["new_comment"]
+    comment = html.escape(comment)
     post = request.form["postidhidden"]
+    post = html.escape(post)
     username= "Guest"
     auth_cookie = hashlib.sha256(request.cookies.get("auth","").encode()).hexdigest()
     PotentialCreator = user_collection.find_one({"auth":auth_cookie}, {"_id":0})
