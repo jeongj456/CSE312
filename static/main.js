@@ -6,6 +6,8 @@ function update_posts(post_message) {
     message_id.innerHTML = post_message[post_message.length -1]["ID"];
     message_subject.innerHTML = post_message[post_message.length - 1]["subject"];
     message_body.innerHTML = post_message[post_message.length - 1]["creator"] + ": " + post_message[post_message.length - 1]["body"];
+
+    localStorage.setItem("test1", Number(document.getElementById("post_id").innerHTML));
 }
 
 
@@ -18,7 +20,9 @@ function startup() {
         if (this.readyState === 4 && this.status === 200) { 
             const message = JSON.parse(this.response);
             if (message.length != 0) { 
-                update_posts(message); 
+                if (localStorage.getItem("test1") == -1) { update_posts(message); }
+                else { update_posts(Array(message[localStorage.getItem("test1")])); }
+ 
                 const post_id = Number(document.getElementById("post_id").innerHTML);
                 const postID = document.getElementById("postidhidden");
                 postID.setAttribute("value", post_id);
@@ -111,4 +115,20 @@ function getcomments(){
     // return that list for usage.
     //My idea behind this is that whenever the post is changed, you can call this function
     // to get the comments for a post and then from that you can populate the comments section as a list.
+}
+
+function modify_local() {
+
+    const request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState === 4 && this.status === 200) { 
+            const message = JSON.parse(this.response);
+            console.log(message)
+            localStorage.setItem("test1", message);
+        }
+    }
+    
+    request.open("GET", "/modify_local");
+    request.send();
+
 }
