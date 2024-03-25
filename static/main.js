@@ -95,6 +95,10 @@ function getcomments(){
                     idk.innerHTML += message[i]["postowner"] + ": " + message[i]["body"] + "<br>";
                 }
             }
+            else{
+                const idk = document.getElementById("comment_box");
+                idk.innerHTML = "";
+            }
         }
     }
 
