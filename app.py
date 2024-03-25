@@ -196,7 +196,10 @@ def getcomments(postid):
 @app.route("/modify_local",methods=["GET"])
 def sendIDplusone():
     ID = ID_collection.find_one({},{"_id":0})
-    data = json.dumps(ID["id"]+1)
+    if ID == None:
+        data = json.dumps(0)
+    else:
+        data = json.dumps(ID["id"]+1)
     return data
 
 @app.after_request
