@@ -6,8 +6,6 @@ function update_posts(post_message) {
     message_id.innerHTML = post_message[post_message.length -1]["ID"];
     message_subject.innerHTML = post_message[post_message.length - 1]["subject"];
     message_body.innerHTML = post_message[post_message.length - 1]["creator"] + ": " + post_message[post_message.length - 1]["body"];
-
-    localStorage.setItem("test1", Number(document.getElementById("post_id").innerHTML));
 }
 
 
@@ -20,9 +18,8 @@ function startup() {
         if (this.readyState === 4 && this.status === 200) { 
             const message = JSON.parse(this.response);
             if (message.length != 0) { 
-                console.log(localStorage.getItem("test1"));
-                if (localStorage.getItem("test1") == -1 || localStorage.getItem("test1") == null) { update_posts(message); }
-                else { update_posts(Array(message[localStorage.getItem("test1")])); }
+                if (Number(document.getElementById("post_id").innerHTML) == -1) { update_posts(message); }
+                else { update_posts(Array(message[Number(document.getElementById("post_id").innerHTML)])); }
  
                 const post_id = Number(document.getElementById("post_id").innerHTML);
                 const postID = document.getElementById("postidhidden");
@@ -125,7 +122,7 @@ function modify_local() {
         if (this.readyState === 4 && this.status === 200) { 
             const message = JSON.parse(this.response);
             console.log(message)
-            localStorage.setItem("test1", message);
+            Number(document.getElementById("post_id").innerHTML) = message;
         }
     }
     
