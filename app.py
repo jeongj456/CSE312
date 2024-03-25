@@ -193,6 +193,12 @@ def getcomments(postid):
     data = json.dumps(list(comments))
     return data
 
+@app.route("/modify_local",methods=["GET"])
+def sendIDplusone():
+    ID = ID_collection.find_one({},{"_id":0})
+    data = json.dumps(ID["ID"]+1)
+    return data
+
 @app.after_request
 def nosniff(response):
     response.headers["X-Content-Type-Options"] = "nosniff"
