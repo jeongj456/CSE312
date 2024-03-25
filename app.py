@@ -90,13 +90,13 @@ def index():
         pass
     elif request.method == 'GET':
         file1 = os.path.join(homepageimg, 'eagle.jpg') #line 20 and the following lines allow you to upload an image
-        file2 = os.path.join(homepageimg, 'owl.jpg')
+        # file2 = os.path.join(homepageimg, 'owl.jpg')
         form = UploadFileForm()
         if form.validate_on_submit():
             file = form.file.data # First grab the file
             file.save(os.path.join(os.path.abspath(os.path.dirname(__file__)),app.config['UPLOAD_FOLDER'],secure_filename(file.filename))) # Then save the file
             return "File has been uploaded."
-        return render_template('main.html', form=form, image1=file1, image2=file2) #image1 and image2 are the files/images that are given into the html as an image in the html tag <img src = "{{image1}}">
+        return render_template('main.html', form=form, image1=file1) #image1 and image2 are the files/images that are given into the html as an image in the html tag <img src = "{{image1}}">
 
 @app.route('/static/css/main.css', methods=['GET'])
 def css(): return render_template('main.css')
@@ -176,7 +176,7 @@ def add_comment():
         username = PotentialCreator["username"]
     # POSTID, body, postowner
     comments_collection.insert_one({"POSTID":post,"body":comment,"postowner":username})
-    return ("", 204)
+    return redirect("/")
 
 @app.route("/getcomments/<postid>",methods=["GET"])
 def getcomments(postid):

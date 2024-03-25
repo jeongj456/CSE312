@@ -17,14 +17,20 @@ function startup() {
     request.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) { 
             const message = JSON.parse(this.response);
-            if (message.length != 0) { update_posts(message); }
+            if (message.length != 0) { 
+                update_posts(message); 
+                const post_id = Number(document.getElementById("post_id").innerHTML);
+                const postID = document.getElementById("postidhidden");
+                postID.setAttribute("value", post_id);
+                getcomments();
+            }
         }
     }
     
     request.open("GET", "/startup");
     request.send();
+    
 }
-document.get
 
 function arrow_up() {
     const request = new XMLHttpRequest();
@@ -33,18 +39,20 @@ function arrow_up() {
         if (this.readyState === 4 && this.status === 200) { 
             const message = JSON.parse(this.response);
             if (message.length != 0) { 
-                post_id = Number(document.getElementById("post_id").innerHTML);
+                const post_id = Number(document.getElementById("post_id").innerHTML);
                 const postID = document.getElementById("postidhidden");
                 postID.setAttribute("value", post_id);
-                if (post_id != -1 && post_id < message.length - 1) { update_posts(Array(message[post_id + 1])); postID.setAttribute("value", post_id+1); }
+                if (post_id != -1 && post_id < message.length - 1) { 
+                    update_posts(Array(message[post_id + 1])); 
+                    postID.setAttribute("value", post_id+1); 
+                    getcomments();
+                }
              }
         }
     }
     
     request.open("GET", "/startup");
     request.send();
-
-    getcomments();
 }
 
 
@@ -55,30 +63,38 @@ function arrow_down() {
         if (this.readyState === 4 && this.status === 200) { 
             const message = JSON.parse(this.response);
             if (message.length != 0) {
-                post_id = Number(document.getElementById("post_id").innerHTML);
+                const post_id = Number(document.getElementById("post_id").innerHTML);
                 const postID = document.getElementById("postidhidden");
                 postID.setAttribute("value", post_id);
-                if (post_id != -1 && post_id > 0) { update_posts(Array(message[post_id - 1])); postID.setAttribute("value", post_id-1); }
+                if (post_id != -1 && post_id > 0) { 
+                    update_posts(Array(message[post_id - 1])); 
+                    postID.setAttribute("value", post_id-1); 
+                    getcomments();
+                }
              }
         }
     }
     
     request.open("GET", "/startup");
     request.send();
-
-    getcomments();
 }
 
 function getcomments(){
     let route = "/getcomments/"
-    const post_id = document.getElementById("post_id").innerHTML;
-    route += post_id;
+    route += Number(document.getElementById("post_id").innerHTML);
 
     const request = new XMLHttpRequest();
     request.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) {
             const message = JSON.parse(this.response);
-            console.log(this.response);
+            console.log(message);
+            if (message.length != 0) {
+                const idk = document.getElementById("comment_box");
+                idk.innerHTML = "";
+                for (let i = 0; i < message.length; i++) { 
+                    idk.innerHTML += message[i]["postowner"] + ": " + message[i]["body"] + "<br>";
+                }
+            }
         }
     }
 
