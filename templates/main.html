@@ -13,36 +13,40 @@
         <div class="current-status">
             ※ Current status: Guest
         </div>
-        <div class="login">
-            <div style="font-size: medium; font-weight: bold;">Login</div>
-            <form action="/login" method="post">
-                <label>Username: <input id="login-form-username" type="text" name="login_username"/></label>
-                <br/>
-                <label>Password: &nbsp;<input id="login-form-password" type="password" name="login_password"></label>
-                <input type="submit" value="Log in"> <!--Creates a button that submits the data-->
-            </form>
-        </div>
 
-        <div class="register">
-            <div style="font-size: medium; font-weight: bold;">Don't have an account?</div>
-            <form action="/signup" method="post">
-                <label>Username: <input id="login-form-username" type="text" name="login-username"/></label>
-                <br/>
-                <label>Password: &nbsp;<input id="login-form-password" type="password" name="login-password"></label>
-                <br/>
-                <label>Re-enter Password: &nbsp;<input id="login-form-password2" type = 'password' name = 'login-password2'></label>
-                <br/>
-                <input type="submit" href='/signup' value="Create">
-                <!--<a href='/signup'><button>Create</button></a>-->
-            </form>
+        <div class="login-register-box">
+            <div class="login">
+                <div style="font-size: medium; font-weight: bold;">Login</div>
+                    <form action="/login" method="post">
+                        <label>Username: <input id="login-form-username" type="text" name="login_username"/></label>
+                        <br/>
+                        <label>Password: &nbsp;<input id="login-form-password" type="password" name="login_password"></label>
+                        <input type="submit" value="Log in"> <!--Creates a button that submits the data-->
+                    </form>
+            </div>
+
+            <div class="register">
+                <div style="font-size: medium; font-weight: bold;">Don't have an account?</div>
+                <form action="/signup" method="post">
+                    <label>Username: <input id="login-form-username" type="text" name="login-username"/></label>
+                    <br/>
+                    <label>Password: &nbsp;<input id="login-form-password" type="password" name="login-password"></label>
+                    <br/>
+                    <label>Re-enter Password: &nbsp;<input id="login-form-password2" type = 'password' name = 'login-password2'></label>
+                    <br/>
+                    <input type="submit" href='/signup' value="Create">
+                    <!--<a href='/signup'><button>Create</button></a>-->
+                </form>
+            </div>
         </div>
+        
             
 
         <div class="container">
             <body>
                 
                 <div class="explore-page">
-                    <h1 id="modifybyJS">Explore</h1>
+                    <h3 id="modifybyJS">Explore</h3>
                     <a href="/renderpostcreation"><button type="button">Create A Post!</button></a>
                     <!--<img src = "{{image}}">-->
                     <!--<img src= "{{url_for('static', filename='/public/homepage.jpg')}}" > -->
@@ -69,9 +73,8 @@
                         </div>
                     </div>
                     <div id="comment_box"></div>
-
+                    <!--Supported file types button to upload pdf, jpg, png-->
                 </div>
-                
 
                 <div class="arrows1">
                     <div class="arr up" type="button" onclick="arrow_up()"><div></div></div>

@@ -78,7 +78,7 @@ input[type="submit"]:hover{
     height: 75%;
     background: #e7f5fe;
     float: left;
-    margin: 15px;
+    margin: auto;
     box-sizing: border-box;
     overflow: hidden;
     border-radius: 10px;
