@@ -19,13 +19,13 @@ div.login, div.register {
 }
 
 div.login {
-    top: 20px;
-    left: 1%;
+    top: 138px;
+    left: 0.8%;
 }
 
 div.register {
-    top: 10px;
-    right: 2%;
+    top: 18px;
+    left: 0.8%;
 }
 
 input[type="submit"]{
