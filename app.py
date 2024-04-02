@@ -162,7 +162,7 @@ def homeimage():
     return send_file('static/public/homepage.jpg', mimetype = 'image/jpeg')
 
 
-@app.route('/renderpostcreation',methods=["GET"])
+@app.route('/renderpostcreation', methods=["GET"])
 def setuppost():
     return send_file("templates/tempposts.html", mimetype="text/html")
 
@@ -202,7 +202,7 @@ def storepost():
     return redirect('/')
 
 
-@app.route("/main.js",methods=["GET"])
+@app.route("/main.js", methods=["GET"])
 def sendmainJS():
     return send_file("static/main.js",mimetype="text/javascript")
 
@@ -233,19 +233,18 @@ def add_comment():
     return redirect("/")
 
 
-@app.route("/getcomments/<postid>",methods=["GET"])
+@app.route("/getcomments/<postid>", methods=["GET"])
 def getcomments(postid):
     comments = comments_collection.find({"POSTID":postid},{"_id":0})
     return json.dumps(list(comments))
 
 
-@app.route("/modify_local",methods=["GET"])
+@app.route("/modify_local", methods=["GET"])
 def sendIDplusone():
     ID = ID_collection.find_one({},{"_id":0})
     if ID == None: return json.dumps(0)
     else: return json.dumps(ID["id"])
 
-# [HEY MIKE!!!] can I add () after request or does that break something.
 @app.after_request
 def nosniff(response):
     response.headers["X-Content-Type-Options"] = "nosniff"
