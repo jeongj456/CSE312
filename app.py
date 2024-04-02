@@ -176,7 +176,7 @@ def sendpostdata():
 def add_comment():
     comment = request.form["new_comment"]
     comment = html.escape(comment)
-    post = request.form["postidhidden"]
+    post = request.form["post_id"]
     post = html.escape(post)
     username= "Guest"
     auth_cookie = hashlib.sha256(request.cookies.get("auth","").encode()).hexdigest()
