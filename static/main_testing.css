@@ -12,11 +12,11 @@ body {
     font-size: 18px;
 }
 
-.login-register-box{
+.authentication{
     position: absolute;
     left: 0;
     width: 27%;
-    border: 5px solid #ADD8E6	;
+    border: 5px solid #ADD8E6;
     height: 100%;
 }
 
@@ -28,6 +28,7 @@ div.login, div.register {
 }
 
 input[type="submit"]{
+    font-family: cursive;
     width: auto;
     padding: 6px 12px;
     margin-top: 0px; /* Adjust as necessary to manage space*/
@@ -46,7 +47,6 @@ input[type="submit"]:hover{
 
 /*If you want to change a div inside a div, need to list all the parent divs before that one*/
 
-
 .container {
     position: absolute;
     text-align: center;
@@ -54,6 +54,12 @@ input[type="submit"]:hover{
     right: 0;
     border: 5px solid #ADD8E6	;
     height: 100%;
+}
+
+button[type="button"] {
+    font-family: cursive;
+    font-size: 16px;
+    width: 65%;
 }
 
 
