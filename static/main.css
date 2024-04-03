@@ -45,7 +45,6 @@ input[type="submit"]:hover{
 
 /*If you want to change a div inside a div, need to list all the parent divs before that one*/
 
-
 .container {
     position: absolute;
     text-align: center;
@@ -63,7 +62,7 @@ input[type="submit"]:hover{
     width: 65%;
     height: 75%;
     background: #e7f5fe;
-    margin: auto;
+    margin: 0 auto;
     box-sizing: border-box;
     overflow: hidden;
     border-radius: 10px;
@@ -132,6 +131,10 @@ input[type="submit"]:hover{
     left: 30%;
 }
 */
+
+.peoples-comments{
+    bottom: 2cm;
+}
 
 .box1 .peoples-comments h2,
 .box2 .peoples-comments h2 {
