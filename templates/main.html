@@ -14,16 +14,6 @@
 
         <div class="authentication">
             
-            <div class="login">
-                <div style="font-size: medium; font-weight: bold;">Login</div>
-                    <form action="/login" method="post">
-                        <label>Username: <input id="login-form-username" type="text" name="login_username"/></label><br>
-                        <label>Password: &nbsp;<input id="login-form-password" type="password" name="login_password"></label><br>
-
-                        <input type="submit" value="Log in">
-                    </form>
-            </div>
-
             <div class="register">
                 <div style="font-size: medium; font-weight: bold;">Don't have an account?</div>
                 <form action="/signup" method="post">
@@ -33,6 +23,16 @@
                     
                     <input type="submit" href='/signup' value="Create">
                 </form>
+            </div>
+
+            <div class="login">
+                <div style="font-size: medium; font-weight: bold;">Login</div>
+                    <form action="/login" method="post">
+                        <label>Username: <input id="login-form-username" type="text" name="login_username"/></label><br>
+                        <label>Password: &nbsp;<input id="login-form-password" type="password" name="login_password"></label><br>
+
+                        <input type="submit" value="Log in">
+                    </form>
             </div>
 
             <div class="logout" hidden><a href="/logout"><button>Logout</button></a></div>
