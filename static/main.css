@@ -12,7 +12,7 @@ body {
     border: 5px solid white;
 }
 
-.login-register-box{
+.authentication{
     position: absolute;
     left: 0;
     width: 33%;
@@ -71,6 +71,10 @@ input[type="submit"]:hover{
     font-weight: bold;
     left: 45%;
     border: 5px solid red;
+}
+
+img{
+
 }
 
 /* Arrow Button Styles */
