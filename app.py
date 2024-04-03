@@ -5,6 +5,7 @@ import html
 import bcrypt
 import secrets
 import hashlib
+import sys
 
 from datetime import datetime
 from pymongo import MongoClient
@@ -25,6 +26,7 @@ comments_collection = db["comments"] # POSTID, body, postowner
 app = Flask(__name__)
 app.config["SECRET_KEY"] = 'supersecretkey'
 app.config['UPLOAD_FOLDER'] = 'static/files'
+ALLOWED_EXTENSIONS = {"jpg", "png"}
 homepageimg = os.path.join('static', 'public')
 
 
@@ -201,7 +203,6 @@ def storepost():
     ID_collection.update_one({"id":ID}, {"$set": {"id":ID + 1}})
     return redirect('/')
 
-
 @app.route("/main.js", methods=["GET"])
 def sendmainJS():
     return send_file("static/main.js",mimetype="text/javascript")
@@ -232,18 +233,64 @@ def add_comment():
     comments_collection.insert_one({"POSTID":post,"body":comment,"postowner":username})
     return redirect("/")
 
-
 @app.route("/getcomments/<postid>", methods=["GET"])
 def getcomments(postid):
     comments = comments_collection.find({"POSTID":postid},{"_id":0})
     return json.dumps(list(comments))
-
 
 @app.route("/modify_local", methods=["GET"])
 def sendIDplusone():
     ID = ID_collection.find_one({},{"_id":0})
     if ID == None: return json.dumps(0)
     else: return json.dumps(ID["id"])
+
+# Store multimedia posts
+@app.route("/action_page", methods=["POST"])
+def handleimageposts():
+    # Get the user image
+    file = request.files["filename"]
+    userfile = file.filename
+    extension = userfile.split(".", 1)[1]
+    if not extension in ALLOWED_EXTENSIONS:
+        return redirect("/")
+
+    # grab ID
+    ID = 0
+    increment = ID_collection.find_one({}, {"_id":0})
+    if increment != None: ID = increment["id"]
+    else: ID_collection.insert_one({"id":0})
+    # Store it to disk with the unique message ID that will correspond to the post the image lies within
+    # Create the path to the image (where it will be stored)
+    # imageroute =os.path.join(os.path.abspath(os.path.dirname(__file__)),"static","public","images")
+    imageroute =os.path.join("static","public","images")
+    imagepath=os.path.join(imageroute,str(ID)+"."+extension)
+    file.save(imagepath)
+
+    imageelement = "<img src=\""+imagepath+"\"/>"
+    # authenticate
+    auth_cookie = hashlib.sha256(request.cookies.get("auth","").encode()).hexdigest()
+    PotentialCreator = user_collection.find_one({"auth":auth_cookie}, {"_id":0})
+    # if authenticated change username to their username, otherwise leave as Guest
+    username = "Guest"
+    if not PotentialCreator == None: username = PotentialCreator["username"]
+
+    #insert into chat DB, increment message count
+    post_collection.insert_one({"ID": ID,"subject": "","body":imageelement,"creator":username})
+    ID_collection.update_one({"id":ID}, {"$set": {"id":ID + 1}})
+    return redirect("/")
+
+# the general route which will handle serving user-provided files stored on disk
+@app.route("/static/public/images/<ID>", methods=["GET"])
+def provideuserimage(ID):
+    type = ""
+    if ID[-3:] == "png":
+        type = "image/png"
+    elif ID[-3:] == "jpg":
+        type = "image/jpg"
+    path = os.path.join("static","public","images", ID)
+    userfile = open(path, "rb")
+    print(userfile, file=sys.stderr)
+    return send_file(path,mimetype=type)
 
 @app.after_request
 def nosniff(response):
