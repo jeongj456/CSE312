@@ -1,26 +1,38 @@
-<script src="/main.js" type="text/javascript"></script>
+{% extends 'base.html' %}
 
-<body>
+{% block head %}
+<link rel="stylesheet" href="{{url_for('static', filename='tempposts.css')}}">
+{% endblock %}
+
+{% block body %}
+<body onload="startup()">
 
     <h3>Let the world know what you're thinking!</h3><br>
-    <form action="/makepost" method="POST">
-        <label>Subject</label><br>
-        <textarea placeholder="Type subject here..." id="subjectbox" name="subjectbox"></textarea><br>
-        <br></br>
+    <div class="post-body">
+        <form action="/makepost" method="POST">
+            <label>Subject</label><br>
+            <textarea placeholder="Type subject here..." id="subjectbox" name="subjectbox"></textarea><br>
+            <br></br>
 
-        <label>Message Body</label><br>
-        <textarea placeholder="Type message here..." id="messagebody" name="messagebody" style="height: 4cm; width: 7cm;"></textarea><br>
-        <br></br>
+            <label>Message Body</label><br>
+            <textarea placeholder="Type message here..." id="messagebody" name="messagebody" style="height: 4cm; width: 7cm;"></textarea><br>
+            <br></br>
 
-        <input type="submit" value="Post!">
-    </form>
+            <input type="submit" value="Post!">
+        </form>
+    </div>
+    
 
-    <form action="/action_page" method="post" enctype="multipart/form-data">
+    <div class="upload-image">
 
-        <label>Upload Image</label><br>
-        <input type="file" id="myFile" name="filename">
-        <input type="submit">
+        <form action="/action_page" method="post" enctype="multipart/form-data">
+            <label>Upload Image</label><br>
+            <input type="file" id="myFile" name="filename">
+            <input type="submit">
+        </form> 
 
-    </form>
+    </div>
+    
 
 </body>
+{% endblock %}

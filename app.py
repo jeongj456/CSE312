@@ -46,6 +46,10 @@ def login():
             # check if password matches db password, if it doesn't then deny login.
             if bcrypt.checkpw(user_password.encode(), user["password"]): 
 
+                """
+                replace_html_element("templates/main.html", '<div class="register" hidden>', '<div class="register">')
+                replace_html_element("templates/main.html", '<div class="login" hidden>', '<div class="login">')
+                """
                 # creating auth token and updating db
                 auth_token = secrets.token_urlsafe(70)
                 hashed_auth = hashlib.sha256(auth_token.encode()).hexdigest()

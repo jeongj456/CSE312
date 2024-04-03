@@ -12,6 +12,12 @@ body {
     border: 5px solid white;
 }
 
+.logout{
+    position: absolute;
+    top: 8cm;
+    left: 1cm;
+}
+
 .authentication{
     position: absolute;
     left: 0;
@@ -73,9 +79,6 @@ input[type="submit"]:hover{
     border: 5px solid red;
 }
 
-img{
-
-}
 
 /* Arrow Button Styles */
 .arrows {
