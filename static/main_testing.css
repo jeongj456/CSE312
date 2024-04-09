@@ -15,7 +15,7 @@ body {
 .authentication{
     position: absolute;
     left: 0;
-    width: 27%;
+    width: 25%;
     border: 5px solid #ADD8E6;
     height: 100%;
 }
@@ -45,12 +45,21 @@ input[type="submit"]:hover{
     background-color: #0056b3;
 }
 
+.logout {
+    font-family: cursive;
+    position: absolute;
+    font-size: 10px;
+    top: 8cm;
+    left: 1cm;
+
+}
+
 /*If you want to change a div inside a div, need to list all the parent divs before that one*/
 
 .container {
     position: absolute;
     text-align: center;
-    width: 72%;
+    width: 74%;
     right: 0;
     border: 5px solid #ADD8E6	;
     height: 100%;
@@ -84,9 +93,9 @@ button[type="button"] {
 /* Arrow Button Styles */
 .arrows {
     position: absolute;
-    left: 75%;
+    left: 82%;
     top: 50%;
-    border: 5px solid red;
+    /* border: 5px solid red; */
 }
 
 .arr {
@@ -159,4 +168,16 @@ button[type="button"] {
 
 .peoples-comments h2, .add-comment form {
     margin-top: 10px;
+}
+
+/* For subject1 and body_placeholder */
+#subject1, #body_placeholder {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* For peoples-comments */
+.peoples-comments {
+    overflow-y: auto; /* Add vertical scroll if content overflows */
+    max-height: 200px; /* Adjust based on your layout needs */
 }
