@@ -167,17 +167,20 @@ button[type="button"] {
 
 
 .peoples-comments h2, .add-comment form {
+    color: #00008B;
     margin-top: 10px;
 }
 
-/* For subject1 and body_placeholder */
 #subject1, #body_placeholder {
+    background-color: #FFF8DC;
+    color: #333333;
     word-wrap: break-word;
     overflow-wrap: break-word;
 }
 
-/* For peoples-comments */
 .peoples-comments {
-    overflow-y: auto; /* Add vertical scroll if content overflows */
-    max-height: 200px; /* Adjust based on your layout needs */
+    background-color: #FFF8DC;
+    color: #333333;
+    overflow-y: auto;
+    max-height: 200px;
 }
