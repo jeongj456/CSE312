@@ -32,7 +32,6 @@ body {
 }
 
 .post-body, .upload-image {
-    font-family: cursive;
     position: relative;
     width: 48%; 
     min-height: 40vh;
@@ -52,6 +51,7 @@ textarea, input[type="file"], input[type="submit"] {
 }
 
 input[type="submit"] {
+    font-family: cursive;
     background-color: #0056b3; 
     color: white;
     border: none;
