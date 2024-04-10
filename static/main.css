@@ -69,7 +69,6 @@ input[type="submit"]:hover{
     width: 90%;
     height: 5cm;
     border: 5px solid blue;
-    display: inline-block;
 }
 
 
