@@ -1,0 +1,1 @@
+This file is here purely so that git doesn't ignore the images folder, don't mind me.
