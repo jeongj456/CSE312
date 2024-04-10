@@ -62,7 +62,7 @@ function arrow_control(arrow_direction) {
             (arrow_direction == 1 && post_id != -1 && message.length != 0 && post_id < message.length - 1)) { 
 
                 // update server to remeber the user's last viewed post
-                if (message[post_id]["creator"] != "Guest") {  update_place(message[post_id]["creator"], post_id + arrow_direction); }    
+                if (message[post_id]["creator"] != "Guest") { update_place(message[post_id]["creator"], post_id + arrow_direction); }    
 
                 // update post subject, body, and id to message. Then increment/decrement post_id, and displpay new message details
                 update_posts(Array(message[post_id + arrow_direction])); 
