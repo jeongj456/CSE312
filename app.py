@@ -19,14 +19,14 @@ mongo_client = MongoClient("mongo")
 db = mongo_client["cse312Project"]
 
 ID_collection = db["id"] # id
-user_collection = db["users"] # username, password, auth, xsrf
+user_collection = db["users"] # username, password, auth, xsrf, place
 post_collection = db["posts"] # ID, subject, body, creator
 comments_collection = db["comments"] # POSTID, body, postowner
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = 'supersecretkey'
 app.config['UPLOAD_FOLDER'] = 'static/files'
-ALLOWED_EXTENSIONS = {"jpg", "png"}
+ALLOWED_EXTENSIONS = {"jpg", "png", "gif"}
 homepageimg = os.path.join('static', 'public')
 
 
@@ -46,10 +46,6 @@ def login():
             # check if password matches db password, if it doesn't then deny login.
             if bcrypt.checkpw(user_password.encode(), user["password"]): 
 
-                """
-                replace_html_element("templates/main.html", '<div class="register" hidden>', '<div class="register">')
-                replace_html_element("templates/main.html", '<div class="login" hidden>', '<div class="login">')
-                """
                 # creating auth token and updating db
                 auth_token = secrets.token_urlsafe(70)
                 hashed_auth = hashlib.sha256(auth_token.encode()).hexdigest()
@@ -80,7 +76,7 @@ def signup():
 
         # Check if the username exists in the DB already, if it does ignore.
         user = user_collection.find_one({"username":user_username}, {"_id":0})
-        if user == None: user_collection.insert_one({"username":user_username, "password":hashed_pass, "auth":0, "xsrf":0})
+        if user == None: user_collection.insert_one({"username":user_username, "password":hashed_pass, "auth":0, "xsrf":0, "place":-1})
     return redirect("/") 
 
 class UploadFileForm(FlaskForm):
@@ -95,7 +91,6 @@ def index():
     if request.cookies.get('auth') == None:
         replace_html_element("templates/main.html", 'class="logout"', 'class="logout" hidden')
         replace_html_element("templates/main.html", "Current status:.*", "Current status: Guest")
-    
 
     else:
         hashed_auth = hashlib.sha256(request.cookies.get('auth').encode()).hexdigest()
@@ -105,17 +100,16 @@ def index():
             replace_html_element("templates/main.html", 'class="logout"', 'class="logout" hidden')
             replace_html_element("templates/main.html", "Current status:.*", "Current status: Guest")
 
-        # if the user's auth cooke is in db; reveal logout button and set their username to what's in db
+        # if the user's auth cooke is in db; reveal logout button, set their username to what's in db, and load the last comment they viewed
         else:
-            username = user_collection.find_one({"auth":hashed_auth}, {"_id":0})["username"]
+            user = user_collection.find_one({"auth":hashed_auth}, {"_id":0})
             replace_html_element("templates/main.html", 'class="logout" hidden.*', 'class="logout">')
-            replace_html_element("templates/main.html", "Current status:.*", "Current status: " + username)
-
+            replace_html_element("templates/main.html", "Current status:.*", "Current status: " + user["username"])
+            replace_html_element("templates/main.html", 'id="post_id" value=".*"', 'id="post_id" value="' + str(user["place"]) + '"')
 
     if request.method == 'POST': pass
     elif request.method == 'GET':
         # [HELP HELP!!!] Kameron here, idk what any of this is doing, please explain
-
         # line 20 and the following lines allow you to upload an image
         file1 = os.path.join(homepageimg, 'eagle.jpg')
 
@@ -251,50 +245,65 @@ def sendIDplusone():
 # Store multimedia posts
 @app.route("/action_page", methods=["POST"])
 def handleimageposts():
+    
     # Get the user image
     file = request.files["filename"]
     userfile = file.filename
     extension = userfile.split(".", 1)[1]
-    if not extension in ALLOWED_EXTENSIONS:
-        return redirect("/")
+    if not extension in ALLOWED_EXTENSIONS: return redirect("/")
 
     # grab ID
     ID = 0
     increment = ID_collection.find_one({}, {"_id":0})
     if increment != None: ID = increment["id"]
     else: ID_collection.insert_one({"id":0})
-    # Store it to disk with the unique message ID that will correspond to the post the image lies within
+
     # Create the path to the image (where it will be stored)
-    # imageroute =os.path.join(os.path.abspath(os.path.dirname(__file__)),"static","public","images")
-    imageroute =os.path.join("static","public","images")
-    imagepath=os.path.join(imageroute,str(ID)+"."+extension)
+    imageroute = os.path.join("static", "public", "images")
+    imagepath = os.path.join(imageroute, str(ID) + "." + extension)
+
+    # Store it to disk with the unique message ID that will correspond to the post the image lies within
     file.save(imagepath)
 
-    imageelement = "<img src=\""+imagepath+"\"/>"
     # authenticate
     auth_cookie = hashlib.sha256(request.cookies.get("auth","").encode()).hexdigest()
     PotentialCreator = user_collection.find_one({"auth":auth_cookie}, {"_id":0})
+
     # if authenticated change username to their username, otherwise leave as Guest
     username = "Guest"
-    if not PotentialCreator == None: username = PotentialCreator["username"]
+    if PotentialCreator != None: username = PotentialCreator["username"]
 
-    #insert into chat DB, increment message count
-    post_collection.insert_one({"ID": ID,"subject": "","body":imageelement,"creator":username})
+    # insert into chat DB, increment message count
+    imageelement = "<img src=\"" + imagepath + "\"/>"
+    post_collection.insert_one({"ID": ID, "subject": "", "body":imageelement, "creator":username})
     ID_collection.update_one({"id":ID}, {"$set": {"id":ID + 1}})
+    
     return redirect("/")
+
 
 # the general route which will handle serving user-provided files stored on disk
 @app.route("/static/public/images/<ID>", methods=["GET"])
 def provideuserimage(ID):
+
+    # find the type
     type = ""
-    if ID[-3:] == "png":
-        type = "image/png"
-    elif ID[-3:] == "jpg":
-        type = "image/jpg"
-    path = os.path.join("static","public","images", ID)
-    userfile = open(path, "rb")
-    print(userfile, file=sys.stderr)
-    return send_file(path,mimetype=type)
+    file = ID.replace('/','')
+    if file[-3:] == "png": type = "image/png"
+    elif file[-3:] == "jpg": type = "image/jpg"
+    elif file[-3:] == "gif": type = "image/gif"
+
+    # create the path and then send it with the mime type
+    path = os.path.join("static", "public", "images", file)
+    return send_file(path, mimetype=type)
+
+
+@app.route("/update_place/<username>/<place>", methods=["GET"])
+def server_place_update(username, place):
+
+    # update the user's place then return the place
+    user_collection.update_one({"username":username}, {"$set": {"place":place}})
+    return json.dumps(place)
+
 
 @app.after_request
 def nosniff(response):

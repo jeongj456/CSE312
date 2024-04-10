@@ -27,7 +27,7 @@ function startup() {
 
             // Dictionary of message, containing subject, body, and post_id
             const message = JSON.parse(this.response);
-            const post_id = Number(document.getElementById("post_id")["value"])
+            const post_id = Number(document.getElementById("post_id")["value"]);
 
             // TODO figure out what first part does and displpay message details
             if (post_id == -1) { update_posts(message); }
@@ -57,8 +57,12 @@ function arrow_control(arrow_direction) {
 
             // Get the post id, check a message exists, and that there is a above/below it based on arrow direction
             const post_id = Number(document.getElementById("post_id")["value"]);
+
             if ((arrow_direction == -1 && post_id != -1 && post_id > 0) || 
             (arrow_direction == 1 && post_id != -1 && message.length != 0 && post_id < message.length - 1)) { 
+
+                // update server to remeber the user's last viewed post
+                if (message[post_id]["creator"] != "Guest") {  update_place(message[post_id]["creator"], post_id + arrow_direction); }    
 
                 // update post subject, body, and id to message. Then increment/decrement post_id, and displpay new message details
                 update_posts(Array(message[post_id + arrow_direction])); 
@@ -99,4 +103,15 @@ function getcomments() {
     // open and send the request with the specific post_id included in the route
     request.open("GET", "/getcomments/" + Number(document.getElementById("post_id")["value"]));
     request.send();
+}
+
+function update_place(username, place) { 
+
+        // Create request
+        const request = new XMLHttpRequest();
+        request.onreadystatechange = function () { }
+    
+        // open and send the request with the user's username and post they were viewing
+        request.open("GET", "/update_place/" + username + "/" + place);
+        request.send();
 }
