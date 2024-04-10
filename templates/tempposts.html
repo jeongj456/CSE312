@@ -11,11 +11,11 @@
     <div class="post-body">
         <form action="/makepost" method="POST">
             <label>Subject</label><br>
-            <textarea placeholder="Type subject here..." id="subjectbox" name="subjectbox"></textarea><br>
+            <textarea class="subject" placeholder="Type subject here..." id="subjectbox" name="subjectbox"></textarea><br>
             <br></br>
 
             <label>Message Body</label><br>
-            <textarea placeholder="Type message here..." id="messagebody" name="messagebody" style="height: 4cm; width: 7cm;"></textarea><br>
+            <textarea class="messagebody" placeholder="Type message here..." id="messagebody" name="messagebody"></textarea><br>
             <br></br>
 
             <input type="submit" value="Post!">
@@ -28,6 +28,7 @@
         <form action="/action_page" method="post" enctype="multipart/form-data">
             <label>Upload Image</label><br>
             <input type="file" id="myFile" name="filename">
+            <div class="filetypes">Supported file types: jpg, png, gif</div>
             <input type="submit">
         </form> 
 

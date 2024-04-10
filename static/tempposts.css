@@ -1,34 +1,12 @@
-/* body{
-    text-align: center;
-}
-
-.post-body{
-    position: absolute;
-    left: 0;
-    width: 50%;
-    border: 5px solid red;
-    height: 100%;
-}
-
-.upload-image{
-    position: absolute;
-    text-align: center;
-    width: 50%;
-    right: 0;
-    border: 5px solid blue;
-    height: 100%;
-} */
-
-
 body {
     font-family: cursive; 
     text-align: center;
     margin: 0;
     padding: 50px 0; 
     font-size: 20px;
-    color: #ADD8E6; 
+    color: black; 
     background-color: #f0f0f0; 
-    background-image: url("/public/homepage.jpg");
+    /*background-image: url("/public/homepage.jpg");*/
 }
 
 .post-body, .upload-image {
@@ -41,6 +19,17 @@ body {
     background-color: #ffffff; 
     display: inline-block;
     vertical-align: top;
+}
+
+textarea{
+    width: 90%;
+}
+.messagebody{
+    height: 5cm;
+}
+
+.filetypes{
+    font-size: 10px;
 }
 
 textarea, input[type="file"], input[type="submit"] {
