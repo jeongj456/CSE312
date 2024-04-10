@@ -26,7 +26,7 @@ comments_collection = db["comments"] # POSTID, body, postowner
 app = Flask(__name__)
 app.config["SECRET_KEY"] = 'supersecretkey'
 app.config['UPLOAD_FOLDER'] = 'static/files'
-ALLOWED_EXTENSIONS = {"jpg", "png"}
+ALLOWED_EXTENSIONS = {"jpg", "png", "gif"}
 homepageimg = os.path.join('static', 'public')
 
 
@@ -287,11 +287,14 @@ def handleimageposts():
 @app.route("/static/public/images/<ID>", methods=["GET"])
 def provideuserimage(ID):
     type = ""
-    if ID[-3:] == "png":
+    file = ID.replace('/','')
+    if file[-3:] == "png":
         type = "image/png"
-    elif ID[-3:] == "jpg":
+    elif file[-3:] == "jpg":
         type = "image/jpg"
-    path = os.path.join("static","public","images", ID)
+    elif file[-3:] == "gif":
+        type = "image/gif"
+    path = os.path.join("static","public","images", file)
     userfile = open(path, "rb")
     print(userfile, file=sys.stderr)
     return send_file(path,mimetype=type)
