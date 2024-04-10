@@ -32,6 +32,7 @@ body {
 }
 
 .post-body, .upload-image {
+    font-family: cursive;
     position: relative;
     width: 48%; 
     min-height: 40vh;
