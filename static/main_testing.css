@@ -172,14 +172,12 @@ button[type="button"] {
 }
 
 #subject1, #body_placeholder {
-    background-color: #FFF8DC;
     color: #333333;
     word-wrap: break-word;
     overflow-wrap: break-word;
 }
 
 .peoples-comments {
-    background-color: #FFF8DC;
     color: #333333;
     overflow-y: auto;
     max-height: 200px;
