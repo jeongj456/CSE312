@@ -170,7 +170,7 @@ def homeimage():
 
 @app.route('/renderpostcreation', methods=["GET"])
 def setuppost():
-    return send_file("templates/tempposts.html", mimetype="text/html")
+    return render_template("tempposts.html")
 
 
 @app.route('/favicon.ico', methods=['GET'])
