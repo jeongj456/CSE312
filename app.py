@@ -27,6 +27,7 @@ app = Flask(__name__)
 app.config["SECRET_KEY"] = 'supersecretkey'
 app.config['UPLOAD_FOLDER'] = 'static/files'
 ALLOWED_EXTENSIONS = {"jpg", "png", "gif"}
+ALLOWED_EXTENSIONS = {"jpg", "png", "gif"}
 homepageimg = os.path.join('static', 'public')
 
 
