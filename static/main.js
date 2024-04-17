@@ -58,11 +58,9 @@ function arrow_control(arrow_direction) {
             // Get the post id, check a message exists, and that there is a above/below it based on arrow direction
             const post_id = Number(document.getElementById("post_id")["value"]);
 
-            if ((arrow_direction == -1 && post_id != -1 && post_id > 0) || 
-            (arrow_direction == 1 && post_id != -1 && message.length != 0 && post_id < message.length - 1)) { 
-
+            if ((arrow_direction == -1 && post_id > 0) || (arrow_direction == 1 && message.length != 0 && post_id < message.length - 1)) { 
                 // update server to remeber the user's last viewed post
-                if (message[post_id]["creator"] != "Guest") { update_place(message[post_id]["creator"], post_id + arrow_direction); }    
+                update_place(message[0]["viewer"], post_id + arrow_direction);    
 
                 // update post subject, body, and id to message. Then increment/decrement post_id, and displpay new message details
                 update_posts(Array(message[post_id + arrow_direction])); 

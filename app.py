@@ -199,8 +199,10 @@ def storepost():
 
     # add the subject, body, and username to post db. Increment ID in db. Then refresh page
     post_collection.insert_one({"ID": ID,"subject": subject,"body":body,"creator":username})
+    user_collection.update_one({"username":username}, {"$set": {"place":ID}})
     ID_collection.update_one({"id":ID}, {"$set": {"id":ID + 1}})
     return redirect('/')
+
 
 @app.route("/main.js", methods=["GET"])
 def sendmainJS():
@@ -209,7 +211,17 @@ def sendmainJS():
 
 @app.route("/startup", methods=["GET"])
 def sendpostdata():
-    posts = post_collection.find({},{"_id":0})
+
+    # check to see if there is a user to the given auth_token
+    auth_cookie = hashlib.sha256(request.cookies.get("auth","").encode()).hexdigest()
+    PotentialCreator = user_collection.find_one({"auth":auth_cookie}, {"_id":0})
+
+    # if authenticated change username to their username, otherwise leave as Guest
+    username = "Guest"
+    if PotentialCreator != None: username = PotentialCreator["username"]
+
+    posts = post_collection.find({}, {"_id":0})
+    post_collection.update_one({}, {"$set": {"viewer":username}})
     return json.dumps(list(posts))
 
 
@@ -232,16 +244,19 @@ def add_comment():
     comments_collection.insert_one({"POSTID":post,"body":comment,"postowner":username})
     return redirect("/")
 
+
 @app.route("/getcomments/<postid>", methods=["GET"])
 def getcomments(postid):
     comments = comments_collection.find({"POSTID":postid},{"_id":0})
     return json.dumps(list(comments))
+
 
 @app.route("/modify_local", methods=["GET"])
 def sendIDplusone():
     ID = ID_collection.find_one({},{"_id":0})
     if ID == None: return json.dumps(0)
     else: return json.dumps(ID["id"])
+
 
 # Store multimedia posts
 @app.route("/action_page", methods=["POST"])
@@ -273,6 +288,7 @@ def handleimageposts():
     # if authenticated change username to their username, otherwise leave as Guest
     username = "Guest"
     if PotentialCreator != None: username = PotentialCreator["username"]
+    user_collection.update_one({"username":username}, {"$set": {"place":ID}})
 
     # insert into chat DB, increment message count
     imageelement = "<img src=\"" + imagepath + "\"/>"
