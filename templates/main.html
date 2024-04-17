@@ -78,7 +78,7 @@
                 postID = Number(document.getElementById("post_id")["value"]);
                 username = document.getElementById("current-status")["value"];
                 const socket = io({'transports':['websocket']});
-                socket.emit("join", {channel: postID, user: username});
+                socket.emit("getMax", {direction: 0, "postID": postID});
                 /* Need to disconnect them from the room and reconnect to a new one when they:
                     increase the post
                     decrease the post  */

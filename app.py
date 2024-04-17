@@ -297,12 +297,16 @@ def maxPostID(data):
     else: ID = 0
     direction = data['direction']
     post = data['postID']
-    placement= post
-    # (arrow_direction == -1 && post_id > 0) || (arrow_direction == 1 && message.length != 0 && post_id < message.length - 1))
-    if direction == -1 and post > 0 or direction == 1 and ID != 0 and post < ID-1:
-        placement += direction
-    comments = comments_collection.find({"POSTID":placement},{"_id":0})
-    emit('get max', {"postID": placement, 'comments':list(comments)}, broadcast=False)
+    if direction == 0:
+        comments = comments_collection.find({"POSTID":post},{"_id":0})
+        emit('get max', {"postID": post, 'comments':list(comments)}, broadcast=False)
+    else:
+        placement= post
+        # (arrow_direction == -1 && post_id > 0) || (arrow_direction == 1 && message.length != 0 && post_id < message.length - 1))
+        if direction == -1 and post > 0 or direction == 1 and ID != 0 and post < ID-1:
+            placement += direction
+        comments = comments_collection.find({"POSTID":placement},{"_id":0})
+        emit('get max', {"postID": placement, 'comments':list(comments)}, broadcast=False)
 
 @app.route("/modify_local", methods=["GET"])
 def sendIDplusone():
