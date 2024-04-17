@@ -10,7 +10,8 @@ import sys
 from datetime import datetime
 from pymongo import MongoClient
 from flask import Flask, render_template, url_for, request, redirect, make_response, send_file
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, join_room, leave_room, emit
+from os.path import join
 from flask_wtf import FlaskForm
 from wtforms import FileField, SubmitField
 from werkzeug.utils import secure_filename
@@ -272,10 +273,11 @@ def sendMessage(data):
 @socketio.on("join")
 def joinRoom(data):
     postID = data['channel']
-    socketio.join_room(postID)
-    socket.emit("User joining Chat", room=postID)
+    emit(postID)
+    join_room(postID)
+    emit("User joining Chat", room=postID)
     comments = comments_collection.find({"POSTID":postid},{"_id":0})
-    socket.emit(list(comments), broadcast=False)
+    emit(list(comments), broadcast=False)
 
 
 @socketio.on('leave')
