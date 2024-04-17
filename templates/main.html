@@ -67,9 +67,12 @@
                     </form>
                 </div>
             </div>
-            <div id="comment_box"></div>
+            <div id="comment_box"></div><button id="testbutton">Click Me!</button>
             <script>
                 const socket = io();
+                document.getElementById("testbutton").addEventListener("click", function(){
+                    socket.emit("Joining", { data: "test"});
+                });
             </script>
         
             <div class="arrows">

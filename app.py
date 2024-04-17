@@ -253,7 +253,12 @@ def getcomments(postid):
 
 @socketio.on('connect')
 def handleConnect():
-    print("Dear god please.")
+    print("Dear god please.",file=sys.stdout)
+
+@socketio.on("Joining")
+def JoinSocket(data):
+    post_collection.insert_one({"ID": 0,"subject": "testing","body":"Please","creator":"username"})
+    ID_collection.update_one({"id":0}, {"$set": {"id":1}})
 
 @app.route("/modify_local", methods=["GET"])
 def sendIDplusone():
