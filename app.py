@@ -10,6 +10,7 @@ import sys
 from datetime import datetime
 from pymongo import MongoClient
 from flask import Flask, render_template, url_for, request, redirect, make_response, send_file
+from flask_socketio import SocketIO
 from flask_wtf import FlaskForm
 from wtforms import FileField, SubmitField
 from werkzeug.utils import secure_filename
@@ -25,8 +26,8 @@ comments_collection = db["comments"] # POSTID, body, postowner
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = 'supersecretkey'
+socketio = SocketIO(app)
 app.config['UPLOAD_FOLDER'] = 'static/files'
-ALLOWED_EXTENSIONS = {"jpg", "png", "gif"}
 ALLOWED_EXTENSIONS = {"jpg", "png", "gif"}
 homepageimg = os.path.join('static', 'public')
 
@@ -197,7 +198,7 @@ def storepost():
     username = "Guest"
     if PotentialCreator != None: username = PotentialCreator["username"]
 
-    # add the subject, body, and username to post db. Increment ID in db. Then refresh page
+    # add the subject, body, username, and place to post db. Increment ID in db. Then refresh page
     post_collection.insert_one({"ID": ID,"subject": subject,"body":body,"creator":username})
     user_collection.update_one({"username":username}, {"$set": {"place":ID}})
     ID_collection.update_one({"id":ID}, {"$set": {"id":ID + 1}})
@@ -250,6 +251,11 @@ def getcomments(postid):
     comments = comments_collection.find({"POSTID":postid},{"_id":0})
     return json.dumps(list(comments))
 
+@socketio.on('on')
+def socketstuff(sock):
+    while True:
+        comments = comments_collection.find({"POSTID":"TEST"},{"_id":0})
+        send(json.dumps(list(comments)))
 
 @app.route("/modify_local", methods=["GET"])
 def sendIDplusone():
@@ -327,4 +333,6 @@ def nosniff(response):
     response.headers["X-Content-Type-Options"] = "nosniff"
     return response
 
-if __name__ == "__main__": app.run(debug=True, host="0.0.0.0", port=8080)
+if __name__ == "__main__": 
+    app.run(debug=True, host="0.0.0.0", port=8080)
+    socketio.run(app, allow_unsafe_werkzeug=True)
