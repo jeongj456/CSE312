@@ -132,8 +132,8 @@ function websockupdate(arrow_direction){
             const post_id = Number(document.getElementById("post_id")["value"]);
 
             if ((arrow_direction == -1 && post_id > 0) || (arrow_direction == 1 && message.length != 0 && post_id < message.length - 1)) { 
-                newval = post_id + direction;
-                getcomments();
+                newval = post_id + arrow_direction;
+                document.getElementById("post_id").setAttribute("value", post_id + arrow_direction); 
                 // return newval;
             }
 

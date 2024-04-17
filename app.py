@@ -286,6 +286,14 @@ def leaveRoom(data):
     leave_room(postID)
     emit(f"User leaving Chat {postID}", room=postID)
 
+@socketio.on('getMax')
+def maxPostID(data):
+    increment = ID_collection.find_one({}, {"_id":0})
+    if increment != None: ID = increment["id"]
+    else: ID = 0
+    increment = data['data']
+    emit('get max', {"data": ID}, broadcast=False)
+
 @app.route("/modify_local", methods=["GET"])
 def sendIDplusone():
     ID = ID_collection.find_one({},{"_id":0})

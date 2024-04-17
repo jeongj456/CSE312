@@ -90,20 +90,21 @@
                 });*/
                 document.getElementById("arrup").addEventListener("click", function(){
                     /*Leave the current chat, enter the next*/
-                    var newid = websockupdate(1);
-                    console.log(1);
-                    console.log(newid);
+                    /*Need to update the message, then use that ID to join the next chat*/
+                    socket.emit("getMax", {data: 1});
                     socket.emit("leave", {channel: postID});
-                    socket.emit("join", {channel: newid,user: username});
                 });
                 document.getElementById("arrdown").addEventListener("click", function(){
                     /*Leave the current chat, enter the next*/
-                    var newid = websockupdate(-1);
-                    console.log(-1);
-                    console.log(newid);
+                    socket.emit("getMax", {data: -1});
                     socket.emit("leave", {channel: postID});
                     socket.emit("join", {channel: newid,user: username});
                 });
+                socket.on("get max", function(data){
+                    /*This function will try to only recieve the ID of the channel to join and join it.*/
+                        console.log(data['data']); 
+                        socket.emit("join", {channel: data['data'],user: username});
+                    });
             </script>
         </div>
     </div>
