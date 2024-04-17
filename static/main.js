@@ -120,6 +120,7 @@ function update_place(username, place) {
 
 
 function websockupdate(arrow_direction){
+    var newid = 0;
     const request = new XMLHttpRequest();
     request.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) { 
@@ -131,13 +132,14 @@ function websockupdate(arrow_direction){
             const post_id = Number(document.getElementById("post_id")["value"]);
 
             if ((arrow_direction == -1 && post_id > 0) || (arrow_direction == 1 && message.length != 0 && post_id < message.length - 1)) { 
-                const newval = post_id + direction;
+                newval = post_id + direction;
                 getcomments();
-                return newval;
+                // return newval;
             }
 
         }
     }
     request.open("GET", "/getcomments/" + Number(document.getElementById("post_id")["value"]));
     request.send();
+    return newid;
 }

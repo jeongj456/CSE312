@@ -90,15 +90,19 @@
                 });*/
                 document.getElementById("arrup").addEventListener("click", function(){
                     /*Leave the current chat, enter the next*/
-                    newid = websockupdate(1);
+                    var newid = websockupdate(1);
+                    console.log(1);
+                    console.log(newid);
                     socket.emit("leave", {channel: postID});
-                    socket.emit("join", {channel: newid});
+                    socket.emit("join", {channel: newid,user: username});
                 });
                 document.getElementById("arrdown").addEventListener("click", function(){
                     /*Leave the current chat, enter the next*/
-                    newid = websockupdate(-1);
+                    var newid = websockupdate(-1);
+                    console.log(-1);
+                    console.log(newid);
                     socket.emit("leave", {channel: postID});
-                    socket.emit("join", {channel: newid});
+                    socket.emit("join", {channel: newid,user: username});
                 });
             </script>
         </div>
