@@ -286,6 +286,10 @@ def leaveRoom(data):
     leave_room(postID)
     emit(f"User leaving Chat {postID}", room=postID)
 
+# This will be triggered every time the arrows were clicked
+# Get the post that you moved to from server
+# Get all pre-existing comments
+# Send the post ID, send the comments
 @socketio.on('getMax')
 def maxPostID(data):
     increment = ID_collection.find_one({}, {"_id":0})
@@ -297,7 +301,8 @@ def maxPostID(data):
     # (arrow_direction == -1 && post_id > 0) || (arrow_direction == 1 && message.length != 0 && post_id < message.length - 1))
     if direction == -1 and post > 0 or direction == 1 and ID != 0 and post < ID-1:
         placement += direction
-    emit('get max', {"data": placement}, broadcast=False)
+    comments = comments_collection.find({"POSTID":placement},{"_id":0})
+    emit('get max', {"postID": placement, 'comments':list(comments)}, broadcast=False)
 
 @app.route("/modify_local", methods=["GET"])
 def sendIDplusone():

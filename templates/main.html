@@ -101,8 +101,15 @@
                 });
                 socket.on("get max", function(data){
                     /*This function will try to only recieve the ID of the channel to join and join it.*/
-                        console.log(data['data']); 
-                        socket.emit("join", {channel: data['data'],user: username});
+                        console.log(data['postID']);
+                        console.log(data['comments']);
+                        comments = data['comments']
+                        socket.emit("join", {channel: data['postID'], user: username});
+                        chat = document.getElementById("comment_box");
+                        chat.innerHTML = "";
+                        for (let i = 0; i < comments.length; i++){
+                            chat.append(comments[i]);
+                        }
                     });
             </script>
         </div>
