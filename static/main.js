@@ -16,7 +16,7 @@ function update_posts(post_message) {
 
 function startup() { 
     //Start the websocket logic.
-    socketlogic();
+    // socketlogic();
 
     // Modify webpage with js on refresh
     const explore = document.getElementById("modifybyJS");
@@ -45,13 +45,17 @@ function startup() {
 
 function socketlogic() {
 
-    socket = io.connect('ws://'+window.location.host+'/sockcomment')
+    socket = new WebSocket('ws://' + window.location.host + '/websocket');
+
+    socket.onmessage = function (message) {
+        console.log("Finally got literally anything")
+    }
 
 }
 
-function handlemessage(message){
-    console.log(JSON.parse(message.data))
-}
+// function handlemessage(message){
+//     console.log(JSON.parse(message.data))
+// }
 
 
 function arrow_up() { arrow_control(1) }

@@ -3,6 +3,7 @@
 
 {% block head %}
 <link rel="stylesheet" href="{{url_for('static', filename='main.css')}}">
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js" integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO" crossorigin="anonymous"></script>
 {% endblock %}
 
 
@@ -67,6 +68,9 @@
                 </div>
             </div>
             <div id="comment_box"></div>
+            <script>
+                const socket = io();
+            </script>
         
             <div class="arrows">
                 <div class="arr up" type="button" onclick="arrow_up()"><div></div></div>

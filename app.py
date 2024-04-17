@@ -251,11 +251,9 @@ def getcomments(postid):
     comments = comments_collection.find({"POSTID":postid},{"_id":0})
     return json.dumps(list(comments))
 
-@socketio.on('on')
-def socketstuff(sock):
-    while True:
-        comments = comments_collection.find({"POSTID":"TEST"},{"_id":0})
-        send(json.dumps(list(comments)))
+@socketio.on('connect')
+def handleConnect():
+    print("Dear god please.")
 
 @app.route("/modify_local", methods=["GET"])
 def sendIDplusone():
