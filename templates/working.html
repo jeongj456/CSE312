@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+
+{% block head %}
+<link rel="stylesheet" href="{{url_for('static', filename='main.css')}}">
+{% endblock %}
+
+
+{% block body %}
+<body onload="startup()">
+    <div class="current-status">
+        ※ Current status: Guest
+    </div>
+
+    <div class="authentication">
+        
+        <div class="register">
+            <div style="font-size: medium; font-weight: bold;">Don't have an account?</div>
+            <form action="/signup" method="post">
+                <label>Username: <input id="login-form-username" type="text" name="login-username"/></label><br/>
+                <label>Password: &nbsp;<input id="login-form-password" type="password" name="login-password"></label><br/>
+                <label>Re-enter Password: &nbsp;<input id="login-form-password2" type = 'password' name = 'login-password2'></label><br/>
+                <input type="submit" href='/signup' value="Create">
+            </form>
+        </div>
+
+        <div class="login">
+            <div style="font-size: medium; font-weight: bold;">Login</div>
+                <form action="/login" method="post">
+                    <label>Username: <input id="login-form-username" type="text" name="login_username"/></label><br>
+                    <label>Password: &nbsp;<input id="login-form-password" type="password" name="login_password"></label><br>
+                    <input type="submit" value="Log in">
+                </form>
+        </div>
+
+        <div class="logout" hidden>
+            <a href="/logout"><button>Logout</button></a>
+        </div>
+
+    </div>
+    
+
+    <div class="container">
+        <div class="epxlore-page">
+            <h3 id="modifybyJS">Container</h3>
+            <a href="/renderpostcreation"><button type="button">Create a Post!</button></a>
+            <br><br/>
+        </div>
+
+        <div class="box1">
+            <h1 id="subject1">Category 1</h1>
+            <div id="scroll-container">
+                <div id="body_placeholder"></div>
+            </div>
+            <br><br/>
+            
+            <div class="peoples-comments">
+                <h2>Comments</h2>
+                <div id="comments"></div>
+                
+                <div class="add-comment">
+                    <form action="/add_comment" method="POST">Add a comment
+                        <input type="text" name="new_comment" id="comment">
+                        <input hidden type="text" name="post_id" id="post_id" value="-1">
+                        <input type="submit" value="Post">
+                    </form>
+                </div>
+            </div>
+            <div id="comment_box"></div>
+        
+            <div class="arrows">
+                <div class="arr up" type="button" onclick="arrow_up()"><div></div></div>
+                <div class="arr down" type="button" onclick="arrow_down()"><div></div></div>
+            </div>
+        </div>
+
+    </div>
+</body>
+{% endblock %}

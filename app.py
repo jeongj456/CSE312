@@ -10,8 +10,6 @@ import sys
 from datetime import datetime
 from pymongo import MongoClient
 from flask import Flask, render_template, url_for, request, redirect, make_response, send_file
-from flask_socketio import SocketIO, join_room, leave_room, emit
-from os.path import join
 from flask_wtf import FlaskForm
 from wtforms import FileField, SubmitField
 from werkzeug.utils import secure_filename
@@ -27,8 +25,8 @@ comments_collection = db["comments"] # POSTID, body, postowner
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = 'supersecretkey'
-socketio = SocketIO(app)
 app.config['UPLOAD_FOLDER'] = 'static/files'
+ALLOWED_EXTENSIONS = {"jpg", "png", "gif"}
 ALLOWED_EXTENSIONS = {"jpg", "png", "gif"}
 homepageimg = os.path.join('static', 'public')
 
@@ -93,7 +91,7 @@ def index():
     # if the user doesn't have a auth cookie; hide logout button and set their status as Guest
     if request.cookies.get('auth') == None:
         replace_html_element("templates/main.html", 'class="logout"', 'class="logout" hidden')
-        replace_html_element("templates/main.html", "Current status:.*", "Current status: Guest<input hidden type='text' id='current-status' value='Guest'>")
+        replace_html_element("templates/main.html", "Current status:.*", "Current status: Guest")
 
     else:
         hashed_auth = hashlib.sha256(request.cookies.get('auth').encode()).hexdigest()
@@ -107,7 +105,7 @@ def index():
         else:
             user = user_collection.find_one({"auth":hashed_auth}, {"_id":0})
             replace_html_element("templates/main.html", 'class="logout" hidden.*', 'class="logout">')
-            replace_html_element("templates/main.html", "Current status:.*", "Current status: " + user["username"]+"<input hidden type='text' id='current-status' value='"+ user["username"]+"'>")
+            replace_html_element("templates/main.html", "Current status:.*", "Current status: " + user["username"])
             replace_html_element("templates/main.html", 'id="post_id" value=".*"', 'id="post_id" value="' + str(user["place"]) + '"')
 
     if request.method == 'POST': pass
@@ -199,7 +197,7 @@ def storepost():
     username = "Guest"
     if PotentialCreator != None: username = PotentialCreator["username"]
 
-    # add the subject, body, username, and place to post db. Increment ID in db. Then refresh page
+    # add the subject, body, and username to post db. Increment ID in db. Then refresh page
     post_collection.insert_one({"ID": ID,"subject": subject,"body":body,"creator":username})
     user_collection.update_one({"username":username}, {"$set": {"place":ID}})
     ID_collection.update_one({"id":ID}, {"$set": {"id":ID + 1}})
@@ -252,60 +250,6 @@ def getcomments(postid):
     comments = comments_collection.find({"POSTID":postid},{"_id":0})
     return json.dumps(list(comments))
 
-@socketio.on('connect')
-def handleConnect():
-    print("Someone connected.")
-
-#TODO: Fix this all
-@socketio.on("SendMessage")
-def sendMessage(data):
-    postID = data['channel']
-    message = data['message']
-    post_collection.insert_one({"ID": 0,"subject": "testing","body":"Please","creator":"username"})
-    ID_collection.update_one({"id":0}, {"$set": {"id":1}})
-
-users = {}
-#TODO: add them to a room
-@socketio.on("join")
-def joinRoom(data):
-    postID = data['channel']
-    username = data['user']
-    SID = request.sid
-    emit(postID)
-    join_room(postID)
-    users[SID] = username
-    emit(f"User {users[SID]} joining Chat {postID}", room=postID)
-    emit(users[SID], room=postID)
-    comments = comments_collection.find({"POSTID":postID},{"_id":0})
-    emit(list(comments), broadcast=False)
-
-
-@socketio.on('leave')
-def leaveRoom(data):
-    postID = data['channel']
-    leave_room(postID)
-    emit(f"User leaving Chat {postID}", room=postID)
-
-# This will be triggered every time the arrows were clicked
-# Get the post that you moved to from server
-# Get all pre-existing comments
-# Send the post ID, send the comments
-@socketio.on('getMax')
-def maxPostID(data):
-    increment = ID_collection.find_one({}, {"_id":0})
-    if increment != None: ID = increment["id"]
-    else: ID = 0
-    direction = data['direction']
-    post = data['postID']
-    if direction == 0:
-        comments = comments_collection.find({"POSTID":post},{"_id":0})
-        emit('get max', {"postID": post, 'comments':list(comments)}, broadcast=False)
-    else:
-        placement= post
-        if direction == -1 and post > 0 or direction == 1 and ID != 0 and post < ID-1:
-            placement += direction
-        comments = comments_collection.find({"POSTID":placement},{"_id":0})
-        emit('get max', {"postID": placement, 'comments':list(comments)}, broadcast=False)
 
 @app.route("/modify_local", methods=["GET"])
 def sendIDplusone():
@@ -383,6 +327,4 @@ def nosniff(response):
     response.headers["X-Content-Type-Options"] = "nosniff"
     return response
 
-if __name__ == "__main__": 
-    app.run(debug=True, host="0.0.0.0", port=8080)
-    socketio.run(app, allow_unsafe_werkzeug=True)
+if __name__ == "__main__": app.run(debug=True, host="0.0.0.0", port=8080)
