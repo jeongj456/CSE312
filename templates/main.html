@@ -91,13 +91,15 @@
                 document.getElementById("arrup").addEventListener("click", function(){
                     /*Leave the current chat, enter the next*/
                     /*Need to update the message, then use that ID to join the next chat*/
-                    socket.emit("getMax", {direction: 1, "postID": postID});
+                    postID = Number(document.getElementById("post_id")["value"]);
                     socket.emit("leave", {channel: postID});
+                    socket.emit("getMax", {direction: 1, "postID": postID});
                 });
                 document.getElementById("arrdown").addEventListener("click", function(){
                     /*Leave the current chat, enter the next*/
-                    socket.emit("getMax", {direction: -1, "postID": postID});
+                    postID = Number(document.getElementById("post_id")["value"]);
                     socket.emit("leave", {channel: postID});
+                    socket.emit("getMax", {direction: -1, "postID": postID});
                 });
                 socket.on("get max", function(data){
                     /*This function will try to only recieve the ID of the channel to join and join it.*/

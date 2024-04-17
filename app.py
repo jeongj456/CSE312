@@ -302,7 +302,6 @@ def maxPostID(data):
         emit('get max', {"postID": post, 'comments':list(comments)}, broadcast=False)
     else:
         placement= post
-        # (arrow_direction == -1 && post_id > 0) || (arrow_direction == 1 && message.length != 0 && post_id < message.length - 1))
         if direction == -1 and post > 0 or direction == 1 and ID != 0 and post < ID-1:
             placement += direction
         comments = comments_collection.find({"POSTID":placement},{"_id":0})
