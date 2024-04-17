@@ -35,7 +35,7 @@
         </div>
 
         <div class="logout" hidden>
-            <a href="/logout"><button>Logout</button></a>
+            <a href="/logout"><button id="logoutButton">Logout</button></a>
         </div>
 
     </div>
@@ -69,17 +69,31 @@
             </div>
             <div id="comment_box"></div><button id="testbutton">Click Me!</button>
             <script>
-                postID = document.getElementById("post_id");
+                /* Need to modify this so that connection is only made when signing in*/
+                postID = Number(document.getElementById("post_id")["value"]);
+                username = document.getElementById("current-status")["value"];
                 const socket = io({'transports':['websocket']});
-                socket.emit("join", {'channel': postID});
+                socket.emit("join", {channel: postID, user: username});
+                /* Need to disconnect them from the room and reconnect to a new one when they:
+                    increase the post
+                    decrease the post  */
                 document.getElementById("testbutton").addEventListener("click", function(){
                     socket.emit("SendMessage", { "message": "test", "channel": postID});
+                });
+                document.getElementById("logoutButton").addEventListener("click", function(){
+                    /*Disconnect Websocket*/
+                });
+                document.getElementById("arrup").addEventListener("click", function(){
+                    /*Leave the current chat, enter the next*/
+                });
+                document.getElementById("arrdown").addEventListener("click", function(){
+                    /*Leave the current chat, enter the next*/
                 });
             </script>
         
             <div class="arrows">
-                <div class="arr up" type="button" onclick="arrow_up()"><div></div></div>
-                <div class="arr down" type="button" onclick="arrow_down()"><div></div></div>
+                <div class="arr up" id="arrup" type="button" onclick="arrow_up()"><div></div></div>
+                <div class="arr down" id="arrdown" type="button" onclick="arrow_down()"><div></div></div>
             </div>
         </div>
 

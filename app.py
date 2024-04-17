@@ -93,7 +93,7 @@ def index():
     # if the user doesn't have a auth cookie; hide logout button and set their status as Guest
     if request.cookies.get('auth') == None:
         replace_html_element("templates/main.html", 'class="logout"', 'class="logout" hidden')
-        replace_html_element("templates/main.html", "Current status:.*", "Current status: Guest")
+        replace_html_element("templates/main.html", "Current status:.*", "Current status: Guest<input hidden type='text' id='current-status' value='Guest'>")
 
     else:
         hashed_auth = hashlib.sha256(request.cookies.get('auth').encode()).hexdigest()
@@ -107,7 +107,7 @@ def index():
         else:
             user = user_collection.find_one({"auth":hashed_auth}, {"_id":0})
             replace_html_element("templates/main.html", 'class="logout" hidden.*', 'class="logout">')
-            replace_html_element("templates/main.html", "Current status:.*", "Current status: " + user["username"])
+            replace_html_element("templates/main.html", "Current status:.*", "Current status: " + user["username"]+"<input hidden type='text' id='current-status' value='"+ user["username"]+"'>")
             replace_html_element("templates/main.html", 'id="post_id" value=".*"', 'id="post_id" value="' + str(user["place"]) + '"')
 
     if request.method == 'POST': pass
@@ -252,16 +252,11 @@ def getcomments(postid):
     comments = comments_collection.find({"POSTID":postid},{"_id":0})
     return json.dumps(list(comments))
 
-# TODO: check if this actually stops long polling over socketIO
-# socketio.set('transports',['websocket'])
-
 @socketio.on('connect')
 def handleConnect():
     print("Someone connected.")
 
 #TODO: Fix this all
-# I mean I know you're not going to. Because WE BOTH know you're not done. Chump.
-# TODO: Nede to force websockets. SocketIo apparently does fall back to long polling sometimes. Research this.
 @socketio.on("SendMessage")
 def sendMessage(data):
     postID = data['channel']
@@ -269,14 +264,18 @@ def sendMessage(data):
     post_collection.insert_one({"ID": 0,"subject": "testing","body":"Please","creator":"username"})
     ID_collection.update_one({"id":0}, {"$set": {"id":1}})
 
+users = {}
 #TODO: add them to a room
 @socketio.on("join")
 def joinRoom(data):
     postID = data['channel']
+    username = data['user']
+    SID = request.sid
     emit(postID)
     join_room(postID)
-    emit("User joining Chat", room=postID)
-    comments = comments_collection.find({"POSTID":postid},{"_id":0})
+    users[SID] = username
+    emit(users[SID], room=postID)
+    comments = comments_collection.find({"POSTID":postID},{"_id":0})
     emit(list(comments), broadcast=False)
 
 
@@ -284,7 +283,7 @@ def joinRoom(data):
 def leaveRoom(data):
     postID = data['channel']
     leave_room(postID)
-    socket.emit("User leaving Chat", room=postID)
+    emit("User leaving Chat", room=postID)
 
 @app.route("/modify_local", methods=["GET"])
 def sendIDplusone():
