@@ -251,14 +251,38 @@ def getcomments(postid):
     comments = comments_collection.find({"POSTID":postid},{"_id":0})
     return json.dumps(list(comments))
 
+# TODO: check if this actually stops long polling over socketIO
+# socketio.set('transports',['websocket'])
+
 @socketio.on('connect')
 def handleConnect():
-    print("Dear god please.",file=sys.stdout)
+    print("Someone connected.")
 
-@socketio.on("Joining")
-def JoinSocket(data):
+#TODO: Fix this all
+# I mean I know you're not going to. Because WE BOTH know you're not done. Chump.
+# TODO: Nede to force websockets. SocketIo apparently does fall back to long polling sometimes. Research this.
+@socketio.on("SendMessage")
+def sendMessage(data):
+    postID = data['channel']
+    message = data['message']
     post_collection.insert_one({"ID": 0,"subject": "testing","body":"Please","creator":"username"})
     ID_collection.update_one({"id":0}, {"$set": {"id":1}})
+
+#TODO: add them to a room
+@socketio.on("join")
+def joinRoom(data):
+    postID = data['channel']
+    socketio.join_room(postID)
+    socket.emit("User joining Chat", room=postID)
+    comments = comments_collection.find({"POSTID":postid},{"_id":0})
+    socket.emit(list(comments), broadcast=False)
+
+
+@socketio.on('leave')
+def leaveRoom(data):
+    postID = data['channel']
+    leave_room(postID)
+    socket.emit("User leaving Chat", room=postID)
 
 @app.route("/modify_local", methods=["GET"])
 def sendIDplusone():

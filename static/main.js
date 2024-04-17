@@ -15,8 +15,6 @@ function update_posts(post_message) {
 
 
 function startup() { 
-    //Start the websocket logic.
-    // socketlogic();
 
     // Modify webpage with js on refresh
     const explore = document.getElementById("modifybyJS");
@@ -41,16 +39,6 @@ function startup() {
     // open and send request to route /startup
     request.open("GET", "/startup");
     request.send();   
-}
-
-function socketlogic() {
-
-    socket = new WebSocket('ws://' + window.location.host + '/websocket');
-
-    socket.onmessage = function (message) {
-        console.log("Finally got literally anything")
-    }
-
 }
 
 // function handlemessage(message){
