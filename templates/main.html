@@ -68,6 +68,11 @@
                 </div>
             </div>
             <div id="comment_box"></div><button id="testbutton">Click Me!</button>
+        
+            <div class="arrows">
+                <div class="arr up" id="arrup" type="button" onclick="arrow_up()"><div></div></div>
+                <div class="arr down" id="arrdown" type="button" onclick="arrow_down()"><div></div></div>
+            </div>
             <script>
                 /* Need to modify this so that connection is only made when signing in*/
                 postID = Number(document.getElementById("post_id")["value"]);
@@ -78,25 +83,25 @@
                     increase the post
                     decrease the post  */
                 document.getElementById("testbutton").addEventListener("click", function(){
-                    socket.emit("SendMessage", { "message": "test", "channel": postID});
+                    socket.emit("SendMessage", { message: "test", channel: postID});
                 });
-                document.getElementById("logoutButton").addEventListener("click", function(){
-                    /*Disconnect Websocket*/
-                });
+                /*document.getElementById("logoutButton").addEventListener("click", function(){
+                    //Disconnect Websocket
+                });*/
                 document.getElementById("arrup").addEventListener("click", function(){
                     /*Leave the current chat, enter the next*/
+                    newid = websockupdate(1);
+                    socket.emit("leave", {channel: postID});
+                    socket.emit("join", {channel: newid});
                 });
                 document.getElementById("arrdown").addEventListener("click", function(){
                     /*Leave the current chat, enter the next*/
+                    newid = websockupdate(-1);
+                    socket.emit("leave", {channel: postID});
+                    socket.emit("join", {channel: newid});
                 });
             </script>
-        
-            <div class="arrows">
-                <div class="arr up" id="arrup" type="button" onclick="arrow_up()"><div></div></div>
-                <div class="arr down" id="arrdown" type="button" onclick="arrow_down()"><div></div></div>
-            </div>
         </div>
-
     </div>
 </body>
 {% endblock %}

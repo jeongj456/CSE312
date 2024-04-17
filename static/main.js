@@ -117,3 +117,27 @@ function update_place(username, place) {
         request.open("GET", "/update_place/" + username + "/" + place);
         request.send();
 }
+
+
+function websockupdate(arrow_direction){
+    const request = new XMLHttpRequest();
+    request.onreadystatechange = function () {
+        if (this.readyState === 4 && this.status === 200) { 
+
+            // Dictionary of message, containing subject, body, and post_id
+            const message = JSON.parse(this.response);
+
+            // Get the post id, check a message exists, and that there is a above/below it based on arrow direction
+            const post_id = Number(document.getElementById("post_id")["value"]);
+
+            if ((arrow_direction == -1 && post_id > 0) || (arrow_direction == 1 && message.length != 0 && post_id < message.length - 1)) { 
+                const newval = post_id + direction;
+                getcomments();
+                return newval;
+            }
+
+        }
+    }
+    request.open("GET", "/getcomments/" + Number(document.getElementById("post_id")["value"]));
+    request.send();
+}

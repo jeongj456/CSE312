@@ -274,6 +274,7 @@ def joinRoom(data):
     emit(postID)
     join_room(postID)
     users[SID] = username
+    emit(f"User {users[SID]} joining Chat {postID}", room=postID)
     emit(users[SID], room=postID)
     comments = comments_collection.find({"POSTID":postID},{"_id":0})
     emit(list(comments), broadcast=False)
@@ -283,7 +284,7 @@ def joinRoom(data):
 def leaveRoom(data):
     postID = data['channel']
     leave_room(postID)
-    emit("User leaving Chat", room=postID)
+    emit(f"User leaving Chat {postID}", room=postID)
 
 @app.route("/modify_local", methods=["GET"])
 def sendIDplusone():
