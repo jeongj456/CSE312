@@ -109,6 +109,8 @@ def index():
             replace_html_element("templates/main.html", 'class="logout" hidden.*', 'class="logout">')
             replace_html_element("templates/main.html", "Current status:.*", "Current status: " + user["username"]+"<input hidden type='text' id='current-status' value='"+ user["username"]+"'>")
             replace_html_element("templates/main.html", 'id="post_id" value=".*"', 'id="post_id" value="' + str(user["place"]) + '"')
+            replace_html_element("templates/main.html", '<form action="/add_comment" method="POST">', '')
+            replace_html_element("templates/main.html", '<input type="submit" id="submitcomment" value="Post">', '<button id="submitcomment">Post</button>')
 
     if request.method == 'POST': pass
     elif request.method == 'GET':
@@ -252,6 +254,7 @@ def getcomments(postid):
     comments = comments_collection.find({"POSTID":postid},{"_id":0})
     return json.dumps(list(comments))
 
+users = {}
 @socketio.on('connect')
 def handleConnect():
     print("Someone connected.")
@@ -261,11 +264,12 @@ def handleConnect():
 def sendMessage(data):
     postID = data['channel']
     message = data['message']
-    post_collection.insert_one({"ID": 0,"subject": "testing","body":"Please","creator":"username"})
-    ID_collection.update_one({"id":0}, {"$set": {"id":1}})
+    SID = request.sid
+    # POSTID, body, postowner
+    comments_collection.insert_one({"POSTID":postID,"body":message,"postowner": users[SID]})
+    inserted = comments_collection.find_one({"POSTID":postID,"body":message,"postowner": users[SID]},{"_id":0})
+    emit(inserted,room=postID)
 
-users = {}
-#TODO: add them to a room
 @socketio.on("join")
 def joinRoom(data):
     postID = data['channel']
