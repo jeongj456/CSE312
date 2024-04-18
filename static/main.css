@@ -2,15 +2,20 @@ body {
     margin: 0;
     padding: 0;
     font-family: cursive;
-    color: black;
+    color: white;
     background-color: #f0f0f0; 
     font-family: cursive;
-    /*background-image: url("/public/homepage.jpg");*/
+    background-image: url("/public/homepage.jpg");
 }
 
 .current-status{
     color: rgb(206, 81, 81);
     border: 5px solid white;
+}
+
+#subject1{
+    font-size: x-large;
+    text-decoration: underline;
 }
 
 .logout{
@@ -22,9 +27,10 @@ body {
 .authentication{
     position: absolute;
     left: 0;
-    width: 33%;
+    width: 25%;
     height: 100%;
     box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+    /*border: 5px solid red;*/
 }
 
 div.login, div.register {
@@ -55,10 +61,12 @@ input[type="submit"]:hover{
 .container {
     position: absolute;
     text-align: center;
-    width: 66%;
+    width: 73%;
     right: 0;
     height: 100%;
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+    /*box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;*/
+    /*border: 5px solid red;*/
+
 }
 
 #body_placeholder{
@@ -68,17 +76,29 @@ input[type="submit"]:hover{
     position: relative;
     left: 4.5%;
     width: 90%;
-    height: 5cm;
-    border: 5px solid blue;
+    height: 14cm;
+    border: 5px solid grey;
     scroll-behavior: auto;
 }
 
+#comment_placeholder{
+    overflow: hidden;
+    overflow-y: scroll;
+    float: left;
+    position: relative;
+    left: 4.5%;
+    width: 90%;
+    height: 12cm;
+    border: 5px solid grey;
+    scroll-behavior: auto;
+}
 
 /* Box Styles */
 .box1{
+    position: absolute;
     text-align: center;
-    bottom: 2%;
-    width: 65%;
+    top: 4cm;
+    width: 49%;
     height: 75%;
     background: #e7f5fe;
     margin: 0 auto;
@@ -88,8 +108,26 @@ input[type="submit"]:hover{
     color: #0000FF; 
     font-size: 22px; 
     font-weight: bold;
-    left: 45%;
-    border: 5px solid red;
+    left: 0;
+    border: 5px solid white;
+}
+
+.box2{
+    position: absolute;
+    text-align: center;
+    top: 4cm;
+    width: 49%;
+    height: 75%;
+    background: #e7f5fe;
+    margin: 0 auto;
+    box-sizing: border-box;
+    overflow: hidden;
+    border-radius: 10px;
+    color: #0000FF; 
+    font-size: 22px; 
+    font-weight: bold;
+    right: 0;
+    border: 5px solid white;
 }
 
 
@@ -98,7 +136,7 @@ input[type="submit"]:hover{
     position: absolute;
     left: 85%;
     top: 50%;
-    border: 5px solid red;
+    /*border: 5px solid red;*/
 }
 
 .arr {
@@ -156,15 +194,16 @@ input[type="submit"]:hover{
     bottom: 2cm;
 }
 
-.box1 .peoples-comments h2,
-.box2 .peoples-comments h2 {
-    color: #0000FF 
+.add-comment{
+    font-size: medium;
+    bottom: 2cm;
 }
 
+/*
 .box1 .add-comment, .box2 .add-comment {
     color: #0000FF ;
 }
-
+*/
 .box1 .add-comment input[type="text"],
 .box2 .add-comment input[type="text"] {
     width: 50%; /* Adjust this value to your preference */

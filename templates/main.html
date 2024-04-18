@@ -49,18 +49,22 @@
         </div>
 
         <div class="box1">
-            <h1 id="subject1">Category 1</h1>
+            <div id="subject1">Category 1</div>
             <div id="scroll-container">
                 <div id="body_placeholder"></div>
             </div>
             <br><br/>
-            
+        </div>
+
+        <div class="box2">    
             <div class="peoples-comments">
-                <h2>Comments</h2>
+                <div id="subject1">Comments</div>
                 <div id="comments"></div>
-                
+                <div id="scroll-container">
+                    <div id="comment_placeholder"></div>
+                </div>
                 <div class="add-comment">
-                    <form action="/add_comment" method="POST">Add a comment
+                    <form action="/add_comment" method="POST">
                         <input type="text" name="new_comment" id="comment">
                         <input hidden type="text" name="post_id" id="post_id" value="-1">
                         <input type="submit" value="Post">
