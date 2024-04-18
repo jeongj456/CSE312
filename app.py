@@ -256,8 +256,15 @@ def getcomments(postid):
 
 users = {}
 @socketio.on('connect')
-def handleConnect():
+def handleConnect(data):
     print("Someone connected.")
+
+@socketio.on('connection')
+def adduser(data):
+    username = data['user']
+    SID = request.sid
+    users[SID] = username
+    emit(users)
 
 #TODO: Fix this all
 @socketio.on("SendMessage")
@@ -273,11 +280,9 @@ def sendMessage(data):
 @socketio.on("join")
 def joinRoom(data):
     postID = data['channel']
-    username = data['user']
     SID = request.sid
     emit(postID)
     join_room(postID)
-    users[SID] = username
     emit(f"User {users[SID]} joining Chat {postID}", room=postID)
     emit(users[SID], room=postID)
     comments = comments_collection.find({"POSTID":postID},{"_id":0})
