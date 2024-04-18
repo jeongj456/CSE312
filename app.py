@@ -9,7 +9,7 @@ import sys
 
 from datetime import datetime
 from pymongo import MongoClient
-from flask import Flask, render_template, url_for, request, redirect, make_response, send_file
+from flask import Flask, render_template, url_for, request, redirect, make_response, send_file, session
 from flask_socketio import SocketIO, join_room, leave_room, emit
 from os.path import join
 from flask_wtf import FlaskForm
@@ -57,6 +57,7 @@ def login():
                 # create a response with a httponly non session cookie containing their auth token
                 resp = make_response(redirect('/'))
                 resp.set_cookie(key = "auth", value = auth_token, max_age = 10000, httponly = True)
+                session['username'] = user_username
                 return resp
             
             else: return redirect('/')
@@ -154,6 +155,7 @@ def logout():
     # refresh the page but expire the users auth token
     resp = make_response(redirect('/'))
     resp.set_cookie(key = "auth", value = request.cookies.get('auth'), max_age = -1, httponly = True)
+    session['username'] = "Guest"
     return resp
 
 
@@ -276,10 +278,10 @@ def adduser(data):
 def sendMessage(data):
     postID = data['channel']
     message = data['message']
-    SID = request.sid
+    username = session['username']
     # POSTID, body, postowner
-    comments_collection.insert_one({"POSTID":postID,"body":message,"postowner": users[SID]})
-    inserted = comments_collection.find_one({"POSTID":postID,"body":message,"postowner": users[SID]},{"_id":0})
+    comments_collection.insert_one({"POSTID":postID,"body":message,"postowner": username})
+    inserted = comments_collection.find_one({"POSTID":postID,"body":message,"postowner": username},{"_id":0})
     emit(inserted,room=postID)
 
 @socketio.on("join")
