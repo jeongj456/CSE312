@@ -108,7 +108,8 @@ def index():
         # if the user's auth cooke is in db; reveal logout button, set their username to what's in db, and load the last comment they viewed
         else:
             user = user_collection.find_one({"auth":hashed_auth}, {"_id":0})
-
+            # Set the session cookie username as it should be (this should resolve the bug of the username in session being lost on restart)
+            session['username'] = user['username']
             # hide the logout button and change their status to their username
             replace_html_element("templates/main.html", 'class="logout" hidden.*', 'class="logout">')
             replace_html_element("templates/main.html", "Current status:.*", "Current status: " + user["username"]+"<input hidden type='text' id='current-status' value='"+ user["username"]+"'>")
@@ -261,17 +262,9 @@ def getcomments(postid):
     comments = comments_collection.find({"POSTID":postid},{"_id":0})
     return json.dumps(list(comments))
 
-users = {}
 @socketio.on('connect')
 def handleConnect(data):
     print("Someone connected.")
-
-@socketio.on('connection')
-def adduser(data):
-    username = data['user']
-    SID = request.sid
-    users[SID] = username
-    emit(users)
 
 #TODO: Fix this all
 @socketio.on("SendMessage")
@@ -287,11 +280,11 @@ def sendMessage(data):
 @socketio.on("join")
 def joinRoom(data):
     postID = data['channel']
-    SID = request.sid
+    username = session['username']
     emit(postID)
     join_room(postID)
-    emit(f"User {users[SID]} joining Chat {postID}", room=postID)
-    emit(users[SID], room=postID)
+    emit(f"User {username} joining Chat {postID}", room=postID)
+    emit(username, room=postID)
     comments = comments_collection.find({"POSTID":postID},{"_id":0})
     emit(list(comments), broadcast=False)
 

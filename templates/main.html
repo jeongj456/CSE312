@@ -82,17 +82,15 @@
                 username = document.getElementsByClassName("current-status")["value"];
                 const socket = io({'transports':['websocket']});
                 socket.emit("getMax", {direction: 0, "postID": postID});
-                /* Need to disconnect them from the room and reconnect to a new one when they:
-                    increase the post
-                    decrease the post  */
+                
                 document.getElementById("submitcomment").addEventListener("click", function(){
                     post_id = Number(document.getElementById(("post_id")["value"]));
                     comment = document.getElementById("comment").innerHTML;
                     socket.emit("SendMessage", { message: comment, channel: post_id});
                 });
-                socket.on('connect', function(){
-                    socket.emit("connection", {user : username, socketid: socket.id});
-                });
+                // socket.on('connect', function(){
+                //     socket.emit("connection", {user : username, socketid: socket.id});
+                // });
 
                 /*document.getElementById("logoutButton").addEventListener("click", function(){
                     //Disconnect Websocket
