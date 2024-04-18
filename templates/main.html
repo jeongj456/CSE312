@@ -91,7 +91,7 @@
                     socket.emit("SendMessage", { message: comment, channel: post_id});
                 });
                 socket.on('connect', function(){
-                    socket.emit("connection", {user : username});
+                    socket.emit("connection", {user : username, socketid: socket.id});
                 });
 
                 /*document.getElementById("logoutButton").addEventListener("click", function(){
