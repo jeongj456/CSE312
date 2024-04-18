@@ -77,51 +77,62 @@
                 <div class="arr down" id="arrdown" type="button" onclick="arrow_down()"><div></div></div>
             </div>
             <script>
-                /* Need to modify this so that connection is only made when signing in*/
+                // Need to modify this so that connection is only made when signing in
+
+                // get the post ID and username
                 postID = Number(document.getElementById("post_id")["value"]);
                 username = document.getElementsByClassName("current-status")["value"];
+
+                // make it use websockets
                 const socket = io({'transports':['websocket']});
                 socket.emit("getMax", {direction: 0, "postID": postID});
+
                 /* Need to disconnect them from the room and reconnect to a new one when they:
-                    increase the post
-                    decrease the post  */
-                document.getElementById("submitcomment").addEventListener("click", function(){
+                    increase the post, decrease the post  */
+
+                document.getElementById("submitcomment").addEventListener("click", function() {
                     post_id = Number(document.getElementById(("post_id")["value"]));
                     comment = document.getElementById("comment").innerHTML;
-                    socket.emit("SendMessage", { message: comment, channel: post_id});
-                });
-                socket.on('connect', function(){
-                    socket.emit("connection", {user : username, socketid: socket.id});
+                    socket.emit("SendMessage", { message: comment, channel: post_id });
                 });
 
-                /*document.getElementById("logoutButton").addEventListener("click", function(){
-                    //Disconnect Websocket
-                });*/
-                document.getElementById("arrup").addEventListener("click", function(){
-                    /*Leave the current chat, enter the next*/
-                    /*Need to update the message, then use that ID to join the next chat*/
+                socket.on('connect', function() { socket.emit("connection", {user : username, socketid: socket.id}); });
+
+                // document.getElementById("logoutButton").addEventListener("click", function(){ });
+                // Disconnect Websocket
+                
+                document.getElementById("arrup").addEventListener("click", function() {
+                    // Leave the current chat, enter the next
+                    // Need to update the message, then use that ID to join the next chat
                     postID = Number(document.getElementById("post_id")["value"]);
                     socket.emit("leave", {channel: postID});
                     socket.emit("getMax", {direction: 1, "postID": postID});
                 });
-                document.getElementById("arrdown").addEventListener("click", function(){
-                    /*Leave the current chat, enter the next*/
+
+                document.getElementById("arrdown").addEventListener("click", function() {
+                    
+                    // Leave the current chat, enter the next
                     postID = Number(document.getElementById("post_id")["value"]);
                     socket.emit("leave", {channel: postID});
                     socket.emit("getMax", {direction: -1, "postID": postID});
                 });
-                socket.on("get max", function(data){
-                    /*This function will try to only recieve the ID of the channel to join and join it.*/
-                        console.log(data['postID']);
-                        console.log(data['comments']);
-                        comments = data['comments'];
-                        socket.emit("join", {channel: data['postID'], user: username});
-                        chat = document.getElementById("comment_placeholder");
-                        chat.innerHTML = "";
-                        for (let i = 0; i < comments.length; i++) {
-                            chat.innerHTML += comments[i]["postowner"] + ": " + comments[i]["body"] + "<br>";
-                        }
-                    });
+
+                // This function will try to only recieve the ID of the channel to join and join it.
+                socket.on("get max", function(data) {
+                    
+                    comments = data['comments'];
+                    socket.emit("join", {channel: data['postID'], user: username});
+                        
+                    // clear the comment box
+                    chat = document.getElementById("comment_placeholder");
+                    chat.innerHTML = "";
+                    
+                    // display the comments
+                    for (let i = 0; i < comments.length; i++) {
+                        chat.innerHTML += comments[i]["postowner"] + ": " + comments[i]["body"] + "<br>";
+                    }
+                });
+
             </script>
         </div>
     </div>
