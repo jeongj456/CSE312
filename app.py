@@ -252,6 +252,7 @@ def getcomments(postid):
     comments = comments_collection.find({"POSTID":postid},{"_id":0})
     return json.dumps(list(comments))
 
+users = {}
 @socketio.on('connect')
 def handleConnect():
     print("Someone connected.")
@@ -261,11 +262,12 @@ def handleConnect():
 def sendMessage(data):
     postID = data['channel']
     message = data['message']
-    post_collection.insert_one({"ID": 0,"subject": "testing","body":"Please","creator":"username"})
-    ID_collection.update_one({"id":0}, {"$set": {"id":1}})
+    SID = request.sid
+    # POSTID, body, postowner
+    comments_collection.insert_one({"POSTID":postID,"body":message,"postowner": users[SID]})
+    inserted = comments_collection.find_one({"POSTID":postID,"body":message,"postowner": users[SID]},{"_id":0})
+    emit(inserted,room=postID)
 
-users = {}
-#TODO: add them to a room
 @socketio.on("join")
 def joinRoom(data):
     postID = data['channel']
@@ -298,7 +300,7 @@ def maxPostID(data):
     direction = data['direction']
     post = data['postID']
     if direction == 0:
-        comments = comments_collection.find({"POSTID":post},{"_id":0})
+        comments = comments_collection.find({"POSTID":str(post)},{"_id":0})
         emit('get max', {"postID": post, 'comments':list(comments)}, broadcast=False)
     else:
         placement= post

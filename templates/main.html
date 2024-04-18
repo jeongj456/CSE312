@@ -67,11 +67,10 @@
                     <form action="/add_comment" method="POST">
                         <input type="text" name="new_comment" id="comment">
                         <input hidden type="text" name="post_id" id="post_id" value="-1">
-                        <input type="submit" value="Post">
+                        <input type="submit" id="submitcomment" value="Post">
                     </form>
                 </div>
             </div>
-            <div id="comment_box"></div><button id="testbutton">Click Me!</button>
         
             <div class="arrows">
                 <div class="arr up" id="arrup" type="button" onclick="arrow_up()"><div></div></div>
@@ -86,8 +85,9 @@
                 /* Need to disconnect them from the room and reconnect to a new one when they:
                     increase the post
                     decrease the post  */
-                document.getElementById("testbutton").addEventListener("click", function(){
-                    socket.emit("SendMessage", { message: "test", channel: postID});
+                document.getElementById("submitcomment").addEventListener("click", function(){
+                    comment = document.getElementById("comment")
+                    socket.emit("SendMessage", { message: comment, channel: postID});
                 });
                 /*document.getElementById("logoutButton").addEventListener("click", function(){
                     //Disconnect Websocket
@@ -111,7 +111,7 @@
                         console.log(data['comments']);
                         comments = data['comments']
                         socket.emit("join", {channel: data['postID'], user: username});
-                        chat = document.getElementById("comment_box");
+                        chat = document.getElementById("comment_placeholder");
                         chat.innerHTML = "";
                         for (let i = 0; i < comments.length; i++){
                             chat.append(comments[i]);
