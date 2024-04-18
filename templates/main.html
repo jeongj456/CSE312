@@ -91,9 +91,9 @@
                     increase the post, decrease the post  */
 
                 document.getElementById("submitcomment").addEventListener("click", function() {
-                    post_id = Number(document.getElementById(("post_id")["value"]));
+                    postID = Number(document.getElementById("post_id").value);
                     comment = document.getElementById("comment").value;
-                    socket.emit("SendMessage", { message: comment, channel: post_id });
+                    socket.emit("SendMessage", { message: comment, channel: postID });
                 });
 
                 socket.on('connect', function() { socket.emit("connection", {user : username, socketid: socket.id}); });

@@ -275,9 +275,9 @@ def sendMessage(data):
     postID = data['channel']
     message = data['message']
     username = session['username']
-    # POSTID, body, postowner
-    comments_collection.insert_one({"POSTID":postID,"body":message,"postowner": username})
-    inserted = comments_collection.find_one({"POSTID":postID,"body":message,"postowner": username},{"_id":0})
+    # POSTID, body, postowner 
+    comments_collection.insert_one({"POSTID":str(postID),"body":message,"postowner": username})
+    inserted = comments_collection.find_one({"POSTID":str(postID),"body":message,"postowner": username},{"_id":0})
     emit(inserted,room=postID)
 
 @socketio.on("join")
