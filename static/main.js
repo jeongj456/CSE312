@@ -29,10 +29,16 @@ function startup() {
             const message = JSON.parse(this.response);
             const post_id = Number(document.getElementById("post_id")["value"]);
 
-            // TODO figure out what first part does and displpay message details
-            if (post_id == -1) { update_posts(message); }
-            else { update_posts(Array(message[post_id])); }
-            getcomments();
+            console.log("this is where message should start");
+            console.log(message);
+            console.log(post_id);
+            console.log("this is where message should end");
+
+            // If there messages, update to most recent
+            if (message.length != 0) { 
+                update_posts(Array(message[post_id])); 
+                getcomments();
+            }
         }
     }
     
@@ -40,10 +46,6 @@ function startup() {
     request.open("GET", "/startup");
     request.send();   
 }
-
-// function handlemessage(message){
-//     console.log(JSON.parse(message.data))
-// }
 
 
 function arrow_up() { arrow_control(1) }
@@ -116,30 +118,4 @@ function update_place(username, place) {
         // open and send the request with the user's username and post they were viewing
         request.open("GET", "/update_place/" + username + "/" + place);
         request.send();
-}
-
-
-function websockupdate(arrow_direction){
-    var newid = 0;
-    const request = new XMLHttpRequest();
-    request.onreadystatechange = function () {
-        if (this.readyState === 4 && this.status === 200) { 
-
-            // Dictionary of message, containing subject, body, and post_id
-            const message = JSON.parse(this.response);
-
-            // Get the post id, check a message exists, and that there is a above/below it based on arrow direction
-            const post_id = Number(document.getElementById("post_id")["value"]);
-
-            if ((arrow_direction == -1 && post_id > 0) || (arrow_direction == 1 && message.length != 0 && post_id < message.length - 1)) { 
-                newval = post_id + arrow_direction;
-                document.getElementById("post_id").setAttribute("value", post_id + arrow_direction); 
-                // return newval;
-            }
-
-        }
-    }
-    request.open("GET", "/getcomments/" + Number(document.getElementById("post_id")["value"]));
-    request.send();
-    return newid;
 }

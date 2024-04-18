@@ -86,8 +86,9 @@
                     increase the post
                     decrease the post  */
                 document.getElementById("submitcomment").addEventListener("click", function(){
-                    comment = document.getElementById("comment")
-                    socket.emit("SendMessage", { message: comment, channel: postID});
+                    post_id = Number(document.getElementById(("post_id")["value"]));
+                    comment = document.getElementById("comment").innerHTML;
+                    socket.emit("SendMessage", { message: comment, channel: post_id});
                 });
                 /*document.getElementById("logoutButton").addEventListener("click", function(){
                     //Disconnect Websocket

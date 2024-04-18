@@ -109,6 +109,8 @@ def index():
             replace_html_element("templates/main.html", 'class="logout" hidden.*', 'class="logout">')
             replace_html_element("templates/main.html", "Current status:.*", "Current status: " + user["username"]+"<input hidden type='text' id='current-status' value='"+ user["username"]+"'>")
             replace_html_element("templates/main.html", 'id="post_id" value=".*"', 'id="post_id" value="' + str(user["place"]) + '"')
+            replace_html_element("templates/main.html", '<form action="/add_comment" method="POST">', '')
+            replace_html_element("templates/main.html", '<input type="submit" id="submitcomment" value="Post">', '<button id="submitcomment">Post</button>')
 
     if request.method == 'POST': pass
     elif request.method == 'GET':
