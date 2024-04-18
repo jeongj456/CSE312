@@ -67,9 +67,9 @@ def login():
 def signup():
 
     # get user information and html escape it
-    user_username = html.escape(request.form['login-username'])
-    user_password =  html.escape(request.form['login-password'])
-    user_repassword =  html.escape(request.form['login-password2'])
+    user_username = html.escape(request.form['register-username'])
+    user_password =  html.escape(request.form['register-password'])
+    user_repassword =  html.escape(request.form['register-password2'])
     
     # if any of there information was blank refresh the page
     if user_username == "" or user_password == "" or user_repassword == "": return redirect("/")
@@ -90,6 +90,7 @@ class UploadFileForm(FlaskForm):
 @app.route('/', methods=['POST', 'GET'])
 def index():
 
+
     # if the user doesn't have a auth cookie; hide logout button and set their status as Guest
     if request.cookies.get('auth') == None:
         replace_html_element("templates/main.html", 'class="logout"', 'class="logout" hidden')
@@ -106,9 +107,12 @@ def index():
         # if the user's auth cooke is in db; reveal logout button, set their username to what's in db, and load the last comment they viewed
         else:
             user = user_collection.find_one({"auth":hashed_auth}, {"_id":0})
+
+            # hide the logout button and change their status to their username
             replace_html_element("templates/main.html", 'class="logout" hidden.*', 'class="logout">')
             replace_html_element("templates/main.html", "Current status:.*", "Current status: " + user["username"]+"<input hidden type='text' id='current-status' value='"+ user["username"]+"'>")
-            replace_html_element("templates/main.html", 'id="post_id" value=".*"', 'id="post_id" value="' + str(user["place"]) + '"')
+            
+            # stop autheticated users from submitting a comment, websockets will handle this without submitting
             replace_html_element("templates/main.html", '<form action="/add_comment" method="POST">', '')
             replace_html_element("templates/main.html", '<input type="submit" id="submitcomment" value="Post">', '<button id="submitcomment">Post</button>')
 
@@ -199,11 +203,12 @@ def storepost():
 
     # if authenticated change username to their username, otherwise leave as Guest
     username = "Guest"
-    if PotentialCreator != None: username = PotentialCreator["username"]
+    if PotentialCreator != None: 
+        username = PotentialCreator["username"]
+        user_collection.update_one({"username":username}, {"$set": {"place":ID}})
 
     # add the subject, body, username, and place to post db. Increment ID in db. Then refresh page
     post_collection.insert_one({"ID": ID,"subject": subject,"body":body,"creator":username})
-    user_collection.update_one({"username":username}, {"$set": {"place":ID}})
     ID_collection.update_one({"id":ID}, {"$set": {"id":ID + 1}})
     return redirect('/')
 

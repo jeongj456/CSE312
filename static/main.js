@@ -18,26 +18,30 @@ function startup() {
 
     // Modify webpage with js on refresh
     const explore = document.getElementById("modifybyJS");
-    explore.innerHTML = "EXPLORE"; 
-
+    if (explore != null) { explore.innerHTML = "EXPLORE"; }  
+    console.log("this is tot test to see if it gets outside");
     // Create request and wait to recieve response
     const request = new XMLHttpRequest();
     request.onreadystatechange = function () {
         if (this.readyState === 4 && this.status === 200) { 
 
-            // Dictionary of message, containing subject, body, and post_id
+            // Dictionary of message, containing subject, body
             const message = JSON.parse(this.response);
-            const post_id = Number(document.getElementById("post_id")["value"]);
-
-            console.log("this is where message should start");
+            console.log("the message starts here");
             console.log(message);
-            console.log(post_id);
-            console.log("this is where message should end");
+            console.log("this is the message length ", message.length);
 
-            // If there messages, update to most recent
-            if (message.length != 0) { 
-                update_posts(Array(message[post_id])); 
-                getcomments();
+            // If there messages, update to most recent and you're on the main home page
+            if (message.length != 0 && explore != null) { 
+                const post_id = Number(document.getElementById("post_id")["value"]);
+
+                if (post_id == -1) {
+                    console.log("Got to where the post_id == -1")
+                    getcomments(); 
+                } else {
+                    update_posts(Array(message[post_id])); 
+                    getcomments();
+                }
             }
         }
     }
@@ -83,6 +87,7 @@ function arrow_control(arrow_direction) {
 
 
 function getcomments() {
+    console.log("inside the getcomments function");
 
     // Create request and wait to recieve response
     const request = new XMLHttpRequest();
@@ -92,8 +97,10 @@ function getcomments() {
             // Dictionary of message containing owner and body
             const message = JSON.parse(this.response);
 
+            console.log("this is the message", message);
+
             // Clear comment box
-            const comment_box = document.getElementById("comment_box");
+            const comment_box = document.getElementById("comment_placeholder");
             comment_box.innerHTML = "";
 
             // Write all messages specific to post in comment box

@@ -18,9 +18,9 @@
         <div class="register">
             <div style="font-size: medium; font-weight: bold;">Don't have an account?</div>
             <form action="/signup" method="post">
-                <label>Username: <input id="login-form-username" type="text" name="login-username"/></label><br/>
-                <label>Password: &nbsp;<input id="login-form-password" type="password" name="login-password"></label><br/>
-                <label>Re-enter Password: &nbsp;<input id="login-form-password2" type = 'password' name = 'login-password2'></label><br/>
+                <label>Username: <input id="register-form-username" type="text" name="register-username"/></label><br/>
+                <label>Password: &nbsp;<input id="register-form-password" type="password" name="register-password"></label><br/>
+                <label>Re-enter Password: &nbsp;<input id="register-form-password2" type = 'password' name = 'register-password2'></label><br/>
                 <input type="submit" href='/signup' value="Create">
             </form>
         </div>
@@ -79,7 +79,7 @@
             <script>
                 /* Need to modify this so that connection is only made when signing in*/
                 postID = Number(document.getElementById("post_id")["value"]);
-                username = document.getElementById("current-status")["value"];
+                username = document.getElementsByClassName("current-status")["value"];
                 const socket = io({'transports':['websocket']});
                 socket.emit("getMax", {direction: 0, "postID": postID});
                 /* Need to disconnect them from the room and reconnect to a new one when they:
@@ -114,12 +114,12 @@
                     /*This function will try to only recieve the ID of the channel to join and join it.*/
                         console.log(data['postID']);
                         console.log(data['comments']);
-                        comments = data['comments']
+                        comments = data['comments'];
                         socket.emit("join", {channel: data['postID'], user: username});
                         chat = document.getElementById("comment_placeholder");
                         chat.innerHTML = "";
-                        for (let i = 0; i < comments.length; i++){
-                            chat.append(comments[i]);
+                        for (let i = 0; i < comments.length; i++) {
+                            chat.innerHTML += comments[i]["postowner"] + ": " + comments[i]["body"] + "<br>";
                         }
                     });
             </script>
