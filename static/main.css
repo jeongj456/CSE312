@@ -81,6 +81,11 @@ input[type="submit"]:hover{
     scroll-behavior: auto;
 }
 
+img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
 #comment_placeholder{
     overflow: hidden;
     overflow-y: scroll;
