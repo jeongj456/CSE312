@@ -96,8 +96,11 @@
                     socket.emit("SendMessage", { message: comment, channel: postID });
                 });
 
-                socket.on('connect', function() { socket.emit("connection", {user : username, socketid: socket.id}); });
-
+                // socket.on('connect', function() { socket.emit("connection", {user : username, socketid: socket.id}); });
+                socket.on("sent", function(data){
+                    message = data['message'];
+                    chat.innerHTML += message["postowner"] + ": " + message["body"] + "<br>"
+                })
                 // document.getElementById("logoutButton").addEventListener("click", function(){ });
                 // Disconnect Websocket
                 

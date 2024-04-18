@@ -278,7 +278,7 @@ def sendMessage(data):
     # POSTID, body, postowner 
     comments_collection.insert_one({"POSTID":str(postID),"body":message,"postowner": username})
     inserted = comments_collection.find_one({"POSTID":str(postID),"body":message,"postowner": username},{"_id":0})
-    emit(inserted,room=postID)
+    emit("sent", {"message": inserted}, room=postID)
 
 @socketio.on("join")
 def joinRoom(data):
