@@ -305,7 +305,7 @@ def maxPostID(data):
         if direction == -1 and post > 0 or direction == 1 and ID != 0 and post < ID-1:
             placement += direction
         # For some reason this line appears to be retrieving nothing when stuff exists.
-        comments = comments_collection.find({"POSTID":placement},{"_id":0})
+        comments = comments_collection.find({"POSTID":str(placement)},{"_id":0})
         emit('get max', {"postID": placement, 'comments':list(comments)}, broadcast=False)
 
 @app.route("/modify_local", methods=["GET"])
