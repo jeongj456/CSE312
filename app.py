@@ -114,6 +114,9 @@ def index():
             replace_html_element("templates/main.html", 'class="logout" hidden.*', 'class="logout">')
             replace_html_element("templates/main.html", "Current status:.*", "Current status: " + user["username"]+"<input hidden type='text' id='current-status' value='"+ user["username"]+"'>")
             
+            # update authenticated users place to where they were last viewing
+            replace_html_element("templates/main.html", 'id="post_id" value=".*"', 'id="post_id" value="' + str(user["place"]) + '"')
+
             # stop autheticated users from submitting a comment, websockets will handle this without submitting
             replace_html_element("templates/main.html", '<form action="/add_comment" method="POST">', '')
             replace_html_element("templates/main.html", '<input type="submit" id="submitcomment" value="Post">', '<button id="submitcomment">Post</button>')
@@ -310,7 +313,7 @@ def maxPostID(data):
         comments = comments_collection.find({"POSTID":str(post)},{"_id":0})
         emit('get max', {"postID": post, 'comments':list(comments)}, broadcast=False)
     else:
-        placement= post
+        placement = post
         if direction == -1 and post > 0 or direction == 1 and ID != 0 and post < ID-1:
             placement += direction
         # For some reason this line appears to be retrieving nothing when stuff exists.
@@ -353,8 +356,9 @@ def handleimageposts():
 
     # if authenticated change username to their username, otherwise leave as Guest
     username = "Guest"
-    if PotentialCreator != None: username = PotentialCreator["username"]
-    user_collection.update_one({"username":username}, {"$set": {"place":ID}})
+    if PotentialCreator != None: 
+        username = PotentialCreator["username"]
+        user_collection.update_one({"username":username}, {"$set": {"place":ID}})
 
     # insert into chat DB, increment message count
     imageelement = "<img src=\"" + imagepath + "\"/>"

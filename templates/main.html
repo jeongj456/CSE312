@@ -18,9 +18,9 @@
         <div class="register">
             <div style="font-size: medium; font-weight: bold;">Don't have an account?</div>
             <form action="/signup" method="post">
-                <label>Username: <input id="register-form-username" type="text" name="register-username"/></label><br/>
-                <label>Password: &nbsp;<input id="register-form-password" type="password" name="register-password"></label><br/>
-                <label>Re-enter Password: &nbsp;<input id="register-form-password2" type = 'password' name = 'register-password2'></label><br/>
+                <label>Username: <br><input id="register-form-username" type="text" name="register-username"/></label><br/>
+                <label>Password: &nbsp; <br><input id="register-form-password" type="password" name="register-password"></label><br/>
+                <label>Re-enter Password: &nbsp; <br><input id="register-form-password2" type = 'password' name = 'register-password2'></label><br/>
                 <input type="submit" href='/signup' value="Create">
             </form>
         </div>
@@ -28,8 +28,8 @@
         <div class="login">
             <div style="font-size: medium; font-weight: bold;">Login</div>
                 <form action="/login" method="post">
-                    <label>Username: <input id="login-form-username" type="text" name="login_username"/></label><br>
-                    <label>Password: &nbsp;<input id="login-form-password" type="password" name="login_password"></label><br>
+                    <label>Username: <br><input id="login-form-username" type="text" name="login_username"/></label><br>
+                    <label>Password: &nbsp;<br><input id="login-form-password" type="password" name="login_password"></label><br>
                     <input type="submit" value="Log in">
                 </form>
         </div>
@@ -92,7 +92,7 @@
 
                 document.getElementById("submitcomment").addEventListener("click", function() {
                     post_id = Number(document.getElementById(("post_id")["value"]));
-                    comment = document.getElementById("comment").innerHTML;
+                    comment = document.getElementById("comment").value;
                     socket.emit("SendMessage", { message: comment, channel: post_id });
                 });
 
