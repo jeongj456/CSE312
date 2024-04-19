@@ -90,12 +90,16 @@ class UploadFileForm(FlaskForm):
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
-
+    ID = ID_collection.find_one({},{"_id":0})
+    if ID == None: ID = -1;
+    else: ID = ID['id']
+    PLACE = session.get('place', ID-1);
     # if the user doesn't have a auth cookie; hide logout button and set their status as Guest
     if request.cookies.get('auth') == None:
         session['username'] = "Guest"
         replace_html_element("templates/main.html", 'class="logout"', 'class="logout" hidden')
         replace_html_element("templates/main.html", "Current status:.*", "Current status: Guest<input hidden type='text' id='current-status' value='Guest'>")
+        replace_html_element("templates/main.html", 'id="post_id" value=".*"', 'id="post_id" value="' + str(PLACE) + '"')
 
     else:
         hashed_auth = hashlib.sha256(request.cookies.get('auth').encode()).hexdigest()
@@ -105,6 +109,7 @@ def index():
             session['username'] = "Guest"
             replace_html_element("templates/main.html", 'class="logout"', 'class="logout" hidden')
             replace_html_element("templates/main.html", "Current status:.*", "Current status: Guest")
+            replace_html_element("templates/main.html", 'id="post_id" value=".*"', 'id="post_id" value="' + str(PLACE) + '"')
 
         # if the user's auth cooke is in db; reveal logout button, set their username to what's in db, and load the last comment they viewed
         else:
@@ -119,9 +124,7 @@ def index():
             replace_html_element("templates/main.html", 'id="post_id" value=".*"', 'id="post_id" value="' + str(user["place"]) + '"')
 
             # stop autheticated users from submitting a comment, websockets will handle this without submitting
-            replace_html_element("templates/main.html", '<form action="/add_comment" method="POST">', '')
-            replace_html_element("templates/main.html", '<input type="submit" id="submitcomment" value="Post">', '<button id="submitcomment">Post</button>')
-
+            
     if request.method == 'POST': pass
     elif request.method == 'GET': return render_template('main.html')
 
@@ -198,6 +201,7 @@ def storepost():
     # add the subject, body, username, and place to post db. Increment ID in db. Then refresh page
     post_collection.insert_one({"ID":ID, "subject":subject, "body":body, "creator":username})
     ID_collection.update_one({"id":ID}, {"$set": {"id":ID + 1}})
+    session['place'] = ID
     return redirect('/')
 
 
@@ -207,7 +211,6 @@ def sendmainJS(): return send_file("static/main.js",mimetype="text/javascript")
 
 @app.route("/startup", methods=["GET"])
 def sendpostdata():
-
     # check to see if there is a user to the given auth_token
     auth_cookie = hashlib.sha256(request.cookies.get("auth","").encode()).hexdigest()
     PotentialCreator = user_collection.find_one({"auth":auth_cookie}, {"_id":0})
@@ -253,7 +256,7 @@ def handleConnect(data): print("Someone connected.")
 @socketio.on("SendMessage")
 def sendMessage(data):
 
-    postID = html.escape(data['channel'])
+    postID = data['channel']
     message = html.escape(data['message'])
     username = html.escape(session['username'])
 
@@ -349,7 +352,7 @@ def handleimageposts():
     imageelement = "<img src=\"" + imagepath + "\"/>"
     post_collection.insert_one({"ID": ID, "subject": "", "body":imageelement, "creator":username})
     ID_collection.update_one({"id":ID}, {"$set": {"id":ID + 1}})
-    
+    session['place'] = ID
     return redirect("/")
 
 
@@ -371,7 +374,7 @@ def provideuserimage(ID):
 
 @app.route("/update_place/<username>/<place>", methods=["GET"])
 def server_place_update(username, place):
-
+    if username == "Guest": session['place'] = place
     # update the user's place then return the place
     user_collection.update_one({"username":username}, {"$set": {"place":place}})
     return json.dumps(place)

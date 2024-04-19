@@ -64,11 +64,9 @@
                     <div id="comment_placeholder"></div>
                 </div>
                 <div class="add-comment">
-                    <form action="/add_comment" method="POST">
                         <input type="text" name="new_comment" id="comment">
                         <input hidden type="text" name="post_id" id="post_id" value="-1">
-                        <input type="submit" id="submitcomment" value="Post">
-                    </form>
+                        <button id="submitcomment">Post</button>
                 </div>
             </div>
         
@@ -93,6 +91,7 @@
                 document.getElementById("submitcomment").addEventListener("click", function() {
                     postID = Number(document.getElementById("post_id").value);
                     comment = document.getElementById("comment").value;
+                    document.getElementById("comment").value = "";
                     socket.emit("SendMessage", { message: comment, channel: postID });
                 });
 
