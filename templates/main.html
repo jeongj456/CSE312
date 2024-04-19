@@ -99,7 +99,11 @@
                 // socket.on('connect', function() { socket.emit("connection", {user : username, socketid: socket.id}); });
                 socket.on("sent", function(data){
                     message = data['message'];
-                    chat.innerHTML += message["postowner"] + ": " + message["body"] + "<br>"
+                    Room = message['POSTID']
+                    postID = Number(document.getElementById("post_id").value);
+                    if (postID == Room){
+                        chat.innerHTML += message["postowner"] + ": " + message["body"] + "<br>"
+                    }
                 })
                 // document.getElementById("logoutButton").addEventListener("click", function(){ });
                 // Disconnect Websocket

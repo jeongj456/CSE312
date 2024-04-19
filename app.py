@@ -94,6 +94,7 @@ def index():
 
     # if the user doesn't have a auth cookie; hide logout button and set their status as Guest
     if request.cookies.get('auth') == None:
+        session['username'] = "Guest"
         replace_html_element("templates/main.html", 'class="logout"', 'class="logout" hidden')
         replace_html_element("templates/main.html", "Current status:.*", "Current status: Guest<input hidden type='text' id='current-status' value='Guest'>")
 
@@ -102,6 +103,7 @@ def index():
 
         # if the user's auth cookie is not in the db; hide logout button and set their status as Guest
         if user_collection.find_one({"auth":hashed_auth}, {"_id":0}) == None:
+            session['username'] = "Guest"
             replace_html_element("templates/main.html", 'class="logout"', 'class="logout" hidden')
             replace_html_element("templates/main.html", "Current status:.*", "Current status: Guest")
 
@@ -257,15 +259,15 @@ def handleConnect(data):
 @socketio.on("SendMessage")
 def sendMessage(data):
 
-    postID = data['channel']
-    message = data['message']
-    username = session['username']
+    postID = html.escape(data['channel'])
+    message = html.escape(data['message'])
+    username = html.escape(session['username'])
 
     # update the comments with the users message and retrieve inserted message
     comments_collection.insert_one({"POSTID":str(postID), "body":message, "postowner":username})
     inserted = comments_collection.find_one({"POSTID":str(postID), "body":message, "postowner":username}, {"_id":0})
 
-    emit("sent", {"message": inserted}, room=postID)
+    emit("sent", {"message": inserted}, broadcast=True)
 
 @socketio.on("join")
 def joinRoom(data):
