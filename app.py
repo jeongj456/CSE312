@@ -5,17 +5,17 @@ import html
 import bcrypt
 import secrets
 import hashlib
-import sys
 
-from datetime import datetime
 from pymongo import MongoClient
-from flask import Flask, render_template, url_for, request, redirect, make_response, send_file, session
-from flask_socketio import SocketIO, join_room, leave_room, emit
-from os.path import join
-from flask_wtf import FlaskForm
-from wtforms import FileField, SubmitField
 from werkzeug.utils import secure_filename
+
+from wtforms import FileField, SubmitField
 from wtforms.validators import InputRequired
+
+from flask_wtf import FlaskForm
+from flask_socketio import SocketIO, join_room, leave_room, emit
+from flask import Flask, render_template, request, redirect, make_response, send_file, session
+
 
 mongo_client = MongoClient("mongo")
 db = mongo_client["cse312Project"]
@@ -122,23 +122,7 @@ def index():
             replace_html_element("templates/main.html", '<input type="submit" id="submitcomment" value="Post">', '<button id="submitcomment">Post</button>')
 
     if request.method == 'POST': pass
-    elif request.method == 'GET':
-        # [HELP HELP!!!] Kameron here, idk what any of this is doing, please explain
-        # line 20 and the following lines allow you to upload an image
-        file1 = os.path.join(homepageimg, 'eagle.jpg')
-
-        form = UploadFileForm()
-        if form.validate_on_submit():
-
-            # First grab the file
-            file = form.file.data 
-            
-            # Then save the file
-            file.save(os.path.join(os.path.abspath(os.path.dirname(__file__)),app.config['UPLOAD_FOLDER'],secure_filename(file.filename)))
-            return "File has been uploaded."
-        
-        # image1 and image2 are the files/images that are given into the html as an image in the html tag <img src = "{{image1}}">
-        return render_template('main.html', form=form, image1=file1)
+    elif request.method == 'GET': return render_template('main.html')
 
 
 @app.route('/static/css/main.css', methods=['GET'])
@@ -272,53 +256,58 @@ def handleConnect(data):
 #TODO: Fix this all
 @socketio.on("SendMessage")
 def sendMessage(data):
+
     postID = data['channel']
     message = data['message']
     username = session['username']
-    # POSTID, body, postowner 
-    comments_collection.insert_one({"POSTID":str(postID),"body":message,"postowner": username})
-    inserted = comments_collection.find_one({"POSTID":str(postID),"body":message,"postowner": username},{"_id":0})
+
+    # update the comments with the users message and retrieve inserted message
+    comments_collection.insert_one({"POSTID":str(postID), "body":message, "postowner":username})
+    inserted = comments_collection.find_one({"POSTID":str(postID), "body":message, "postowner":username}, {"_id":0})
+
     emit("sent", {"message": inserted}, room=postID)
 
 @socketio.on("join")
 def joinRoom(data):
+
     postID = data['channel']
     username = session['username']
+
     emit(postID)
     join_room(postID)
+
     emit(f"User {username} joining Chat {postID}", room=postID)
     emit(username, room=postID)
+    
     comments = comments_collection.find({"POSTID":postID},{"_id":0})
     emit(list(comments), broadcast=False)
 
 
 @socketio.on('leave')
 def leaveRoom(data):
+
     postID = data['channel']
     leave_room(postID)
     emit(f"User leaving Chat {postID}", room=postID)
 
 # This will be triggered every time the arrows were clicked
-# Get the post that you moved to from server
-# Get all pre-existing comments
-# Send the post ID, send the comments
 @socketio.on('getMax')
 def maxPostID(data):
+
+    post = data['postID']
+    direction = data['direction']
+
+    # get the max post ID
+    ID = 0
     increment = ID_collection.find_one({}, {"_id":0})
     if increment != None: ID = increment["id"]
-    else: ID = 0
-    direction = data['direction']
-    post = data['postID']
-    if direction == 0:
-        comments = comments_collection.find({"POSTID":str(post)},{"_id":0})
-        emit('get max', {"postID": post, 'comments':list(comments)}, broadcast=False)
-    else:
-        placement = post
-        if direction == -1 and post > 0 or direction == 1 and ID != 0 and post < ID-1:
-            placement += direction
-        # For some reason this line appears to be retrieving nothing when stuff exists.
-        comments = comments_collection.find({"POSTID":str(placement)},{"_id":0})
-        emit('get max', {"postID": placement, 'comments':list(comments)}, broadcast=False)
+
+    # move post to next if there is one above/below it
+    if (direction == -1 and post > 0) or (direction == 1 and ID != 0 and post < ID-1): post += direction
+
+    # Get the comments for post. For some reason this line appears to be retrieving nothing when stuff exists.
+    comments = comments_collection.find({"POSTID":str(post)}, {"_id":0})
+    emit('get max', {"postID": post, 'comments':list(comments)}, broadcast=False)
 
 @app.route("/modify_local", methods=["GET"])
 def sendIDplusone():

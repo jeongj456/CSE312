@@ -106,14 +106,12 @@
                 
                 document.getElementById("arrup").addEventListener("click", function() {
                     // Leave the current chat, enter the next
-                    // Need to update the message, then use that ID to join the next chat
                     postID = Number(document.getElementById("post_id")["value"]);
                     socket.emit("leave", {channel: postID});
                     socket.emit("getMax", {direction: 1, "postID": postID});
                 });
 
                 document.getElementById("arrdown").addEventListener("click", function() {
-                    
                     // Leave the current chat, enter the next
                     postID = Number(document.getElementById("post_id")["value"]);
                     socket.emit("leave", {channel: postID});
