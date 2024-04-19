@@ -91,7 +91,6 @@ class UploadFileForm(FlaskForm):
 @app.route('/', methods=['POST', 'GET'])
 def index():
 
-
     # if the user doesn't have a auth cookie; hide logout button and set their status as Guest
     if request.cookies.get('auth') == None:
         replace_html_element("templates/main.html", 'class="logout"', 'class="logout" hidden')
@@ -157,18 +156,15 @@ def replace_html_element(filename, search_text, replace_text):
 
 
 @app.route('/public/homepage.jpg', methods=['GET'])
-def homeimage():
-    return send_file('static/public/homepage.jpg', mimetype = 'image/jpeg')
+def homeimage(): return send_file('static/public/homepage.jpg', mimetype = 'image/jpeg')
 
 
 @app.route('/renderpostcreation', methods=["GET"])
-def setuppost():
-    return render_template("tempposts.html")
+def setuppost(): return render_template("tempposts.html")
 
 
 @app.route('/favicon.ico', methods=['GET'])
-def tabicon():
-    return send_file('static/public/eagle.ico', mimetype = 'image/x-icon')
+def tabicon(): return send_file('static/public/eagle.ico', mimetype = 'image/x-icon')
 
 
 @app.route('/makepost', methods = ["POST"])
@@ -198,14 +194,13 @@ def storepost():
         user_collection.update_one({"username":username}, {"$set": {"place":ID}})
 
     # add the subject, body, username, and place to post db. Increment ID in db. Then refresh page
-    post_collection.insert_one({"ID": ID,"subject": subject,"body":body,"creator":username})
+    post_collection.insert_one({"ID":ID, "subject":subject, "body":body, "creator":username})
     ID_collection.update_one({"id":ID}, {"$set": {"id":ID + 1}})
     return redirect('/')
 
 
 @app.route("/main.js", methods=["GET"])
-def sendmainJS():
-    return send_file("static/main.js",mimetype="text/javascript")
+def sendmainJS(): return send_file("static/main.js",mimetype="text/javascript")
 
 
 @app.route("/startup", methods=["GET"])
@@ -250,8 +245,7 @@ def getcomments(postid):
     return json.dumps(list(comments))
 
 @socketio.on('connect')
-def handleConnect(data):
-    print("Someone connected.")
+def handleConnect(data): print("Someone connected.")
 
 #TODO: Fix this all
 @socketio.on("SendMessage")
@@ -278,7 +272,7 @@ def joinRoom(data):
 
     emit(f"User {username} joining Chat {postID}", room=postID)
     emit(username, room=postID)
-    
+
     comments = comments_collection.find({"POSTID":postID},{"_id":0})
     emit(list(comments), broadcast=False)
 
