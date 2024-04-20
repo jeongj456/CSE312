@@ -76,7 +76,7 @@ input[type="submit"]:hover{
     position: relative;
     left: 4.5%;
     width: 90%;
-    height: 14cm;
+    height: 12cm;
     border: 5px solid grey;
     scroll-behavior: auto;
 }
@@ -94,7 +94,7 @@ img {
     position: relative;
     left: 4.5%;
     width: 90%;
-    height: 10cm;
+    height: 12cm;
     border: 5px solid grey;
     scroll-behavior: auto;
 }
