@@ -140,7 +140,7 @@ img {
 /* Arrow Button Styles */
 .arrows {
     position: absolute;
-    left: -3cm;
+    left: 85%;
     top: 50%;
     /*border: 5px solid red;*/
 }
