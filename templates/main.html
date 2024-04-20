@@ -83,7 +83,7 @@
                 username = document.getElementsByClassName("current-status")["value"];
 
                 // make it use websockets
-                const socket = io("wss://"+window.location.host+"/",{'transports':['websocket']});
+                const socket = io("ws://"+window.location.host+"/",{'transports':['websocket']});
                 socket.emit("getMax", {direction: 0, "postID": postID});
 
                 /* Need to disconnect them from the room and reconnect to a new one when they:
