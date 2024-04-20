@@ -4,6 +4,11 @@ services:     #a list of all the images/containers to create
     image: mongo:4.2.5
     ports:
       - "27017:27017"
+  nginx:
+    build: ./nginx
+    ports:
+      - '80:80'
+      - '443:443'
   app:
     build: .
     environment:
