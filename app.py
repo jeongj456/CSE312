@@ -57,7 +57,7 @@ def login():
                 # creating auth token and updating db
                 auth_token = secrets.token_urlsafe(70)
                 hashed_auth = hashlib.sha256(auth_token.encode()).hexdigest()
-                PLACE = session.get('place',-1)
+                PLACE = session.get('place', -1)
                 user_collection.update_one({"username":user_username, 'place':PLACE}, {"$set": {"auth": hashed_auth}})
 
                 # create a response with a httponly non session cookie containing their auth token
