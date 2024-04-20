@@ -92,7 +92,7 @@ function getcomments() {
             comment_box.innerHTML = "";
 
             // Write all messages specific to post in comment box
-            for (let i = 0; i < message.length; i++) { 
+            for (let i = message.length - 1; i >= 0; i--) { 
                 comment_box.innerHTML += message[i]["postowner"] + ": " + message[i]["body"] + "<br>";
             }
 

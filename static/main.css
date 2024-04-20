@@ -89,6 +89,7 @@ img {
 #comment_placeholder{
     overflow: hidden;
     overflow-y: scroll;
+    overflow-wrap: break-word;
     float: left;
     position: relative;
     left: 4.5%;

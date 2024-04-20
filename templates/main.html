@@ -100,8 +100,8 @@
                     message = data['message'];
                     Room = message['POSTID']
                     postID = Number(document.getElementById("post_id").value);
-                    if (postID == Room){
-                        chat.innerHTML += message["postowner"] + ": " + message["body"] + "<br>"
+                    if (postID == Room) {
+                        chat.insertAdjacentHTML("afterbegin", message["postowner"] + ": " + message["body"] + "<br>")
                     }
                 })
                 // document.getElementById("logoutButton").addEventListener("click", function(){ });
@@ -132,7 +132,7 @@
                     chat.innerHTML = "";
                     
                     // display the comments
-                    for (let i = 0; i < comments.length; i++) {
+                    for (let i = comments.length - 1; i >= 0; i--) {
                         chat.innerHTML += comments[i]["postowner"] + ": " + comments[i]["body"] + "<br>";
                     }
                 });
