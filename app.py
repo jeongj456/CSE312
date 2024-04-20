@@ -34,11 +34,18 @@ homepageimg = os.path.join('static', 'public')
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
-    if request.method == 'GET' or  session['username'] != "Guest": return redirect("/")
+    if request.method == 'GET' or session['username'] != "Guest": return redirect("/")
     elif request.method == 'POST':
         # get user; username and pass then html escape it
-        user_username = html.escape(request.form['login_username'])
-        user_password = html.escape(request.form['login_password'])
+
+        user_username = request.form['login_username']
+        user_password = request.form['login_password']
+
+        user_username = user_username.replace('\\', '\\\\')
+        user_password = user_password.replace('\\', '\\\\')
+
+        user_username = html.escape(user_username)
+        user_password = html.escape(user_password)
 
         # check if they exist in database
         user = user_collection.find_one({"username":user_username}, {"_id":0})
@@ -50,7 +57,7 @@ def login():
                 # creating auth token and updating db
                 auth_token = secrets.token_urlsafe(70)
                 hashed_auth = hashlib.sha256(auth_token.encode()).hexdigest()
-                PLACE = session.get('place',-1)
+                PLACE = session.get('place', -1)
                 user_collection.update_one({"username":user_username, 'place':PLACE}, {"$set": {"auth": hashed_auth}})
 
                 # create a response with a httponly non session cookie containing their auth token
@@ -67,9 +74,18 @@ def login():
 def signup():
 
     # get user information and html escape it
-    user_username = html.escape(request.form['register-username'])
-    user_password =  html.escape(request.form['register-password'])
-    user_repassword =  html.escape(request.form['register-password2'])
+
+    user_username = request.form['register-username']
+    user_password = request.form['register-password']
+    user_repassword = request.form['register-password2']
+
+    user_username = user_username.replace('\\', '\\\\')
+    user_password = user_password.replace('\\', '\\\\')
+    user_repassword = user_repassword.replace('\\', '\\\\')
+
+    user_username = html.escape(user_username)
+    user_password = html.escape(user_password)
+    user_repassword =  html.escape(user_repassword)
     
     # if any of there information was blank refresh the page
     if user_username == "" or user_password == "" or user_repassword == "": return redirect("/")
@@ -95,6 +111,7 @@ def substituteGuestHTML(PLACE):
         replace_html_element("templates/main.html", "Current status:.*", "Current status: Guest<input hidden type='text' id='current-status' value='Guest'>")
         replace_html_element("templates/main.html", 'id="post_id" value=".*"', 'id="post_id" value="' + str(PLACE) + '"')
 
+# useless comment
 @app.route('/', methods=['POST', 'GET'])
 def index():
     ID = ID_collection.find_one({},{"_id":0})
