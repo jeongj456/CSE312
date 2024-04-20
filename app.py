@@ -95,6 +95,7 @@ def substituteGuestHTML(PLACE):
         replace_html_element("templates/main.html", "Current status:.*", "Current status: Guest<input hidden type='text' id='current-status' value='Guest'>")
         replace_html_element("templates/main.html", 'id="post_id" value=".*"', 'id="post_id" value="' + str(PLACE) + '"')
 
+# useless comment
 @app.route('/', methods=['POST', 'GET'])
 def index():
     ID = ID_collection.find_one({},{"_id":0})
