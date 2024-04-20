@@ -58,7 +58,7 @@ def login():
                 auth_token = secrets.token_urlsafe(70)
                 hashed_auth = hashlib.sha256(auth_token.encode()).hexdigest()
                 PLACE = session.get('place', -1)
-                user_collection.update_one({"username":user_username, 'place':PLACE}, {"$set": {"auth": hashed_auth}})
+                user_collection.update_one({"username":user_username}, {"$set": {"auth": hashed_auth, "place":PLACE}})
 
                 # create a response with a httponly non session cookie containing their auth token
                 resp = make_response(redirect('/'))
@@ -111,7 +111,6 @@ def substituteGuestHTML(PLACE):
         replace_html_element("templates/main.html", "Current status:.*", "Current status: Guest<input hidden type='text' id='current-status' value='Guest'>")
         replace_html_element("templates/main.html", 'id="post_id" value=".*"', 'id="post_id" value="' + str(PLACE) + '"')
 
-# useless comment
 @app.route('/', methods=['POST', 'GET'])
 def index():
     ID = ID_collection.find_one({},{"_id":0})
