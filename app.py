@@ -16,7 +16,6 @@ from flask_wtf import FlaskForm
 from flask_socketio import SocketIO, join_room, leave_room, emit
 from flask import Flask, render_template, request, redirect, make_response, send_file, session
 
-
 mongo_client = MongoClient("mongo")
 db = mongo_client["cse312Project"]
 
@@ -35,9 +34,8 @@ homepageimg = os.path.join('static', 'public')
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
-    if request.method == 'GET': return redirect("/")
+    if request.method == 'GET' or  session['username'] != "Guest": return redirect("/")
     elif request.method == 'POST':
-
         # get user; username and pass then html escape it
         user_username = html.escape(request.form['login_username'])
         user_password = html.escape(request.form['login_password'])
@@ -52,7 +50,8 @@ def login():
                 # creating auth token and updating db
                 auth_token = secrets.token_urlsafe(70)
                 hashed_auth = hashlib.sha256(auth_token.encode()).hexdigest()
-                user_collection.update_one({"username":user_username}, {"$set": {"auth": hashed_auth}})
+                PLACE = session.get('place',-1)
+                user_collection.update_one({"username":user_username, 'place':PLACE}, {"$set": {"auth": hashed_auth}})
 
                 # create a response with a httponly non session cookie containing their auth token
                 resp = make_response(redirect('/'))
@@ -80,6 +79,7 @@ def signup():
 
         # Check if the username exists in the DB already, if it does ignore.
         user = user_collection.find_one({"username":user_username}, {"_id":0})
+        
         if user == None: user_collection.insert_one({"username":user_username, "password":hashed_pass, "auth":0, "xsrf":0, "place":-1})
     return redirect("/") 
 
@@ -87,6 +87,13 @@ class UploadFileForm(FlaskForm):
     file = FileField("File", validators=[InputRequired()])
     submit = SubmitField("Upload File")
 
+def substituteGuestHTML(PLACE):
+        session['username'] = "Guest"
+        replace_html_element("templates/main.html", 'class="logout"', 'class="logout" hidden')
+        replace_html_element("templates/main.html", '<div class="register" hidden>', '<div class="register">')
+        replace_html_element("templates/main.html", '<div class="login" hidden>', '<div class="login">')
+        replace_html_element("templates/main.html", "Current status:.*", "Current status: Guest<input hidden type='text' id='current-status' value='Guest'>")
+        replace_html_element("templates/main.html", 'id="post_id" value=".*"', 'id="post_id" value="' + str(PLACE) + '"')
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
@@ -96,20 +103,14 @@ def index():
     PLACE = session.get('place', ID-1);
     # if the user doesn't have a auth cookie; hide logout button and set their status as Guest
     if request.cookies.get('auth') == None:
-        session['username'] = "Guest"
-        replace_html_element("templates/main.html", 'class="logout"', 'class="logout" hidden')
-        replace_html_element("templates/main.html", "Current status:.*", "Current status: Guest<input hidden type='text' id='current-status' value='Guest'>")
-        replace_html_element("templates/main.html", 'id="post_id" value=".*"', 'id="post_id" value="' + str(PLACE) + '"')
+        substituteGuestHTML(PLACE)
 
     else:
         hashed_auth = hashlib.sha256(request.cookies.get('auth').encode()).hexdigest()
 
         # if the user's auth cookie is not in the db; hide logout button and set their status as Guest
         if user_collection.find_one({"auth":hashed_auth}, {"_id":0}) == None:
-            session['username'] = "Guest"
-            replace_html_element("templates/main.html", 'class="logout"', 'class="logout" hidden')
-            replace_html_element("templates/main.html", "Current status:.*", "Current status: Guest")
-            replace_html_element("templates/main.html", 'id="post_id" value=".*"', 'id="post_id" value="' + str(PLACE) + '"')
+            substituteGuestHTML(PLACE)
 
         # if the user's auth cooke is in db; reveal logout button, set their username to what's in db, and load the last comment they viewed
         else:
@@ -118,6 +119,8 @@ def index():
             session['username'] = user['username']
             # hide the logout button and change their status to their username
             replace_html_element("templates/main.html", 'class="logout" hidden.*', 'class="logout">')
+            replace_html_element("templates/main.html", '<div class="register">', '<div class="register" hidden>')
+            replace_html_element("templates/main.html", '<div class="login">', '<div class="login" hidden>')
             replace_html_element("templates/main.html", "Current status:.*", "Current status: " + user["username"]+"<input hidden type='text' id='current-status' value='"+ user["username"]+"'>")
             
             # update authenticated users place to where they were last viewing
@@ -261,10 +264,11 @@ def sendMessage(data):
     username = html.escape(session['username'])
 
     # update the comments with the users message and retrieve inserted message
-    comments_collection.insert_one({"POSTID":str(postID), "body":message, "postowner":username})
-    inserted = comments_collection.find_one({"POSTID":str(postID), "body":message, "postowner":username}, {"_id":0})
+    if message != "" :
+        comments_collection.insert_one({"POSTID":str(postID), "body":message, "postowner":username})
+        inserted = comments_collection.find_one({"POSTID":str(postID), "body":message, "postowner":username}, {"_id":0})
 
-    emit("sent", {"message": inserted}, broadcast=True)
+        emit("sent", {"message": inserted}, broadcast=True)
 
 @socketio.on("join")
 def joinRoom(data):
@@ -322,7 +326,10 @@ def handleimageposts():
     # Get the user image
     file = request.files["filename"]
     userfile = file.filename
-    extension = userfile.split(".", 1)[1]
+    try:
+        extension = userfile.split(".", 1)[1]
+    except:
+        return redirect("/renderpostcreation")
     if not extension in ALLOWED_EXTENSIONS: return redirect("/")
 
     # grab ID
