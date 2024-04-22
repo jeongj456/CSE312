@@ -65,7 +65,7 @@
                 </div>
                 <div class="add-comment">
                         <input type="text" name="new_comment" id="comment">
-                        <input hidden type="text" name="post_id" id="post_id" value="-1">
+                        <input hidden type="text" name="post_id" id="post_id" value="0">
                         <button id="submitcomment">Post</button>
                 </div>
             </div>
@@ -83,7 +83,10 @@
                 username = document.getElementsByClassName("current-status")["value"];
 
                 // make it use websockets
-                const socket = io("wss://"+window.location.host+"/",{'transports':['websocket']});
+                var socket;
+                if (location.protocol == "https:") {
+                    socket = io("wss://"+window.location.host+"/",{'transports':['websocket']});
+                } else { socket = io("ws://"+window.location.host+"/",{'transports':['websocket']}); }
                 socket.emit("getMax", {direction: 0, "postID": postID});
 
                 /* Need to disconnect them from the room and reconnect to a new one when they:

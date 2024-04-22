@@ -31,6 +31,10 @@ app.config['UPLOAD_FOLDER'] = 'static/files'
 ALLOWED_EXTENSIONS = {"jpg", "png", "gif"}
 homepageimg = os.path.join('static', 'public')
 
+if ID_collection.find_one({}) == None: 
+    post_collection.insert_one({"ID":0, "subject":"Greeting", "body":"Hello World", "creator":"Admin"})
+    ID_collection.insert_one({"id":1})
+
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -57,7 +61,7 @@ def login():
                 # creating auth token and updating db
                 auth_token = secrets.token_urlsafe(70)
                 hashed_auth = hashlib.sha256(auth_token.encode()).hexdigest()
-                PLACE = session.get('place', -1)
+                PLACE = session.get('place', 0)
                 user_collection.update_one({"username":user_username}, {"$set": {"auth": hashed_auth, "place":PLACE}})
 
                 # create a response with a httponly non session cookie containing their auth token
@@ -96,7 +100,7 @@ def signup():
         # Check if the username exists in the DB already, if it does ignore.
         user = user_collection.find_one({"username":user_username}, {"_id":0})
         
-        if user == None: user_collection.insert_one({"username":user_username, "password":hashed_pass, "auth":0, "xsrf":0, "place":-1})
+        if user == None: user_collection.insert_one({"username":user_username, "password":hashed_pass, "auth":0, "xsrf":0, "place":0})
     return redirect("/") 
 
 class UploadFileForm(FlaskForm):
@@ -114,7 +118,7 @@ def substituteGuestHTML(PLACE):
 @app.route('/', methods=['POST', 'GET'])
 def index():
     ID = ID_collection.find_one({},{"_id":0})
-    if ID == None: ID = -1;
+    if ID == None: ID = 0;
     else: ID = ID['id']
     PLACE = session.get('place', ID-1);
     # if the user doesn't have a auth cookie; hide logout button and set their status as Guest
