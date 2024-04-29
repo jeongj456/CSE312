@@ -29,8 +29,7 @@ comments_collection = db["comments"] # POSTID, body, postowner
 app = Flask(__name__)
 app.config["SECRET_KEY"] = 'supersecretkey'
 socketio = SocketIO(app)
-limiter = Limiter(get_remote_address, app=app, default_limits=["50 per 10 seconds"],
-                   )
+limiter = Limiter(get_remote_address, app=app, meta_limits=["1/30seconds"], default_limits=["50 per 10 seconds"])
 app.config['UPLOAD_FOLDER'] = 'static/files'
 ALLOWED_EXTENSIONS = {"jpg", "png", "gif"}
 homepageimg = os.path.join('static', 'public')
@@ -39,6 +38,10 @@ if ID_collection.find_one({}) == None:
     post_collection.insert_one({"ID":0, "subject":"Greeting", "body":"Hello World", "creator":"Admin"})
     ID_collection.insert_one({"id":1})
 
+
+@app.errorhandler(429)
+def tooManyReqs(error):
+    return render_template('429.html'), 429
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
