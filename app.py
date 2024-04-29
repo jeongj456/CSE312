@@ -14,6 +14,8 @@ from wtforms.validators import InputRequired
 
 from flask_wtf import FlaskForm
 from flask_socketio import SocketIO, join_room, leave_room, emit
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from flask import Flask, render_template, request, redirect, make_response, send_file, session
 
 mongo_client = MongoClient("mongo")
@@ -27,6 +29,8 @@ comments_collection = db["comments"] # POSTID, body, postowner
 app = Flask(__name__)
 app.config["SECRET_KEY"] = 'supersecretkey'
 socketio = SocketIO(app)
+limiter = Limiter(get_remote_address, app=app, default_limits=["50 per 10 seconds"],
+                   )
 app.config['UPLOAD_FOLDER'] = 'static/files'
 ALLOWED_EXTENSIONS = {"jpg", "png", "gif"}
 homepageimg = os.path.join('static', 'public')

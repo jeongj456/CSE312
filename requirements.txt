@@ -3,3 +3,4 @@ pymongo
 bcrypt
 flask-wtf
 flask-socketio
+Flask-Limiter
