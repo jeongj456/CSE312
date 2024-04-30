@@ -427,8 +427,8 @@ def assignRandom():
     username = "Guest"
     if PotentialCreator != None: username = PotentialCreator["username"]
     # Now we have gotten the username, so now we can generate the random number.
-    ID_collection.find_one({}, {"_id":0})
-    ran = random.randint(0, ran["id"]-1)
+    ID = ID_collection.find_one({}, {"_id":0})
+    ran = random.randint(0, ID["id"]-1)
     session["place"] = ran
     if username != "Guest":
         user_collection.update_one({"username":username}, {"$set": {"place":ran}})
