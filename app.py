@@ -283,7 +283,6 @@ def getcomments(postid):
 @socketio.on('connect')
 def handleConnect(data): print("Someone connected.")
 
-#TODO: Fix this all
 @socketio.on("SendMessage")
 def sendMessage(data):
 
@@ -416,7 +415,24 @@ def server_place_update(username, place):
 
 @app.route("/randomPost", methods = ["GET"])
 def assignRandom():
-    pass
+    # To make this simple, we can just use the systems that we already have
+    # update the place that is being used to display where they are
+    # then just refresh the page. Simple and easy... Right? Right???
+
+    # check to see if there is a user to the given auth_token
+    auth_cookie = hashlib.sha256(request.cookies.get("auth","").encode()).hexdigest()
+    PotentialCreator = user_collection.find_one({"auth":auth_cookie}, {"_id":0})
+
+    # if authenticated change username to their username, otherwise leave as Guest
+    username = "Guest"
+    if PotentialCreator != None: username = PotentialCreator["username"]
+    # Now we have gotten the username, so now we can generate the random number.
+    ID_collection.find_one({}, {"_id":0})
+    ran = random.randint(0, ran["id"]-1)
+    session["place"] = ran
+    if username != "Guest":
+        user_collection.update_one({"username":username}, {"$set": {"place":ran}})
+    return redirect('/')
 
 
 @app.after_request
