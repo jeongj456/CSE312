@@ -432,6 +432,10 @@ def assignRandom():
     session["place"] = ran
     if username != "Guest":
         user_collection.update_one({"username":username}, {"$set": {"place":ran}})
+    # Seems it was that easy! Did some testing, everything still seems to work.
+    # I DID encounter one weird bug where the comments stopped working
+    # BUT I wasn't able to replicate it and I think it was just caused because I sent a message before the WebSockets handshake
+    # finished. 
     return redirect('/')
 
 
