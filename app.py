@@ -5,6 +5,7 @@ import html
 import bcrypt
 import secrets
 import hashlib
+import random
 
 from pymongo import MongoClient
 from werkzeug.utils import secure_filename
@@ -412,6 +413,10 @@ def server_place_update(username, place):
     # update the user's place then return the place
     user_collection.update_one({"username":username}, {"$set": {"place":place}})
     return json.dumps(place)
+
+@app.route("/randomPost", methods = ["GET"])
+def assignRandom():
+    pass
 
 
 @app.after_request
