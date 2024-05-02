@@ -10,5 +10,5 @@ The idea behind this feature is that as there are more and more posts, it can ge
 4. Ensure that you are being shown to a new post than the one you were just on
     - Because there is a random element there is a possibility that you will end up on the same page too (this is attempted to be mitigated by the minimum 20 unique posts)
 5. Repeat steps 3 to 4 anywhere at least 8 times
-    - Keep a brief note of which posts you are sent to
+    - Keep a brief note/mental note of which posts you are sent to
 6. Ensure that after repeating as many times as you want, minimum 8 times, the posts that you were sent to after clicking the button were in a perceptively random order.
